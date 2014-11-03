@@ -10,6 +10,14 @@
   (for [suit suits rank ranks]
     [suit rank]))
 
+(defn draw-card
+  "Returns an array containing two elements: the drawn card and the remaining deck"
+  [deck position]
+  (let [[head,tail] (split-at position deck)
+        drawn-card (first tail)
+        remaining-deck (drop 1 tail)]
+    [drawn-card (concat head remaining-deck)]))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
