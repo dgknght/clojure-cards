@@ -23,16 +23,20 @@
   [cards]
   (some #(>= (count %) 5) (partition-by first (sort-by first cards))))
 
-(defn rank-to-integer
+(defn rank->integer
   "Converts each rank into an integer equivalent"
-  [ranks]
-  (map #(.indexOf all-ranks %) ranks))
+  ([ranks] (rank->integer false ranks))
+  ([aces-high ranks]
+  (let [mapped (map #(.indexOf all-ranks %) ranks)]
+    (if aces-high
+      (replace (hash-map 0 13) mapped)
+      mapped))))
 
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise nil"
   [cards]
   (->> (map last cards)
-       rank-to-integer
+       rank->integer
        sort
        (partition 2 1)
        (map (fn [[low,high]] (- high low)))
