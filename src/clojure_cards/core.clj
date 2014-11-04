@@ -36,7 +36,7 @@
     (map
       (fn [vals] [(first vals) (count vals)])
       (partition-by
-        (fn [val] val)
+        identity
         (map
           (fn [[low,high]] (- high low))
           (partition
