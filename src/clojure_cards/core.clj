@@ -31,20 +31,14 @@
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise nil"
   [cards]
-  (some
-    #(= % [1 4])
-    (map
-      (fn [vals] [(first vals) (count vals)])
-      (partition-by
-        identity
-        (map
-          (fn [[low,high]] (- high low))
-          (partition
-            2
-            1
-            (sort
-              (rank-to-integer
-                (map last cards)))))))))
+  (->> (map last cards)
+       rank-to-integer
+       sort
+       (partition 2 1)
+       (map (fn [[low,high]] (- high low)))
+       (partition-by identity)
+       (map (fn [vals] [(first vals) (count vals)]))
+       (some #(= % [1 4]))))
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
