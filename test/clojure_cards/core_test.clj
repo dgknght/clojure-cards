@@ -17,3 +17,13 @@
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
   (testing "Returns false if not a flush"
     (is (nil? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
+
+(deftest is-a-straight
+  (testing "Correctly identify a straight with a low ace"
+    (is (true? (cards/straight? [[:clubs :ace] [:clubs 2] [:hearts 3] [:spades 4] [:clubs 5]]))))
+  (testing "Correctly identify a straight with a hight ace"
+    (is (true? (cards/straight? [[:clubs 10] [:clubs :jack] [:hearts :queen] [:spades :king] [:clubs :ace]]))))
+  (testing "Correctly identify a straight with more than 5 cards"
+    (is (true? (cards/straight? [[:clubs :ace] [:clubs 2] [:hearts 3] [:spades 4] [:clubs 5] [:clubs 6]]))))
+  (testing "Returns nil if no straight is present"
+    (is (nil? (cards/straight? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))

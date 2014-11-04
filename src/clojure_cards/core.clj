@@ -1,13 +1,13 @@
 (ns clojure-cards.core
   (:gen-class))
 
-(def suits [:clubs :diamonds :hearts :spades])
-(def ranks [:ace 2 3 4 5 6 7 8 9 10 :jack :queen :king])
+(def all-suits [:clubs :diamonds :hearts :spades])
+(def all-ranks [:ace 2 3 4 5 6 7 8 9 10 :jack :queen :king])
 
 (defn deck
   "Returns a new unshuffled deck"
   []
-  (for [suit suits rank ranks]
+  (for [suit all-suits rank all-ranks]
     [suit rank]))
 
 (defn draw-card
@@ -22,7 +22,33 @@
   "Returns a boolean value indicating whether or not the specified cards contain a flush"
   [cards]
   (some #(>= (count %) 5) (partition-by first (sort-by first cards))))
+
+(defn rank-to-integer
+  "Converts each rank into an integer equivalent"
+  [ranks]
+  (map #(.indexOf all-ranks %) ranks))
+
+(defn straight?
+  "Returns true if the specified cards contain a straight, otherwise nil"
+  [cards]
+  (some
+    #(= % [1 4])
+    (map
+      (fn [vals] [(first vals) (count vals)])
+      (partition-by
+        (fn [val] val)
+        (map
+          (fn [[low,high]] (- high low))
+          (partition
+            2
+            1
+            (sort
+              (rank-to-integer
+                (map last cards)))))))))
+
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Deals some cards and evaluates the hand strength"
   [& args]
-  (println "Hello, World!"))
+  (let [hand (take 5 (shuffle(deck)))]
+    (println hand)
+    hand))
