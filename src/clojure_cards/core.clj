@@ -18,6 +18,10 @@
         remaining-deck (drop 1 tail)]
     [drawn-card (concat head remaining-deck)]))
 
+(defn flush?
+  "Returns a boolean value indicating whether or not the specified cards contain a flush"
+  [cards]
+  (some #(>= (count %) 5) (partition-by first (sort-by first cards))))
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]

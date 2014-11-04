@@ -11,3 +11,9 @@
     (is (= 51 (count (last (cards/draw-card (cards/deck) 1))))))
   (testing "Drawing a card returns the card"
     (is (= [:clubs :ace] (first (cards/draw-card (cards/deck) 0))))))
+
+(deftest is-a-flush
+  (testing "Correctly identify a flush"
+    (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
+  (testing "Returns false if not a flush"
+    (is (nil? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
