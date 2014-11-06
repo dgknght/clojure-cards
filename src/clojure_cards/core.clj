@@ -41,7 +41,9 @@
        (map (fn [[low,high]] (- high low)))
        (partition-by identity)
        (map (fn [vals] [(first vals) (count vals)]))
-       (some #(= % [1 4]))))
+       (some #(and
+                 (= (first %) 1)
+                 (>= (last %) 4)))))
 
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise nil"
