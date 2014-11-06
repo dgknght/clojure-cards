@@ -32,17 +32,27 @@
       (replace (hash-map 0 13) mapped)
       mapped))))
 
-(defn straight?
-  "Returns true if the specified cards contain a straight, otherwise nil"
-  [cards]
-  (->> (map last cards)
-       rank->integer
+(defn five-in-sequence?
+  "Returns true if the specified cards have 5 ranks in sequence, nil if not"
+  [ranks]
+  (->> ranks
        sort
        (partition 2 1)
        (map (fn [[low,high]] (- high low)))
        (partition-by identity)
        (map (fn [vals] [(first vals) (count vals)]))
        (some #(= % [1 4]))))
+
+(defn straight?
+  "Returns true if the specified cards contain a straight, otherwise nil"
+  [cards]
+  (let [ranks (map last cards)
+        aces-low (rank->integer ranks)
+        aces-high (rank->integer true ranks)]
+      (or
+        (five-in-sequence? aces-high)
+        (five-in-sequence? aces-low))))
+
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
