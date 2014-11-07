@@ -22,17 +22,21 @@
 
 (deftest is-two-pair?
   (testing "Correctly identifies two pairs"
-    (is (true? (cards/two-pair? [[:clubs 9] [:hearts 10] [:diamonds 9] [:diamonds 8] [:spades 10]])))))
+    (is (true? (cards/two-pair? [[:clubs 9] [:hearts 10] [:diamonds 9] [:diamonds 8] [:spades 10]]))))
+  (testing "Correctly does not identify a hand without two pairs"
+    (is (false? (cards/two-pair? [[:clubs 9] [:hearts 10] [:diamonds 9] [:diamonds 8] [:spades :king]])))))
 
 (deftest is-three-of-a-kind?
   (testing "Correcting identifies three of a kind"
-    (is (true? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond 10]])))))
+    (is (true? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond 10]]))))
+  (testing "Correcting does not identify a hand without three of a kind"
+    (is (false? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond :ace]])))))
 
 (deftest is-a-flush
   (testing "Correctly identify a flush"
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
   (testing "Returns false if not a flush"
-    (is (nil? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
+    (is (false? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
 
 (deftest is-a-straight
   (testing "Correctly identify a straight with a low ace"
