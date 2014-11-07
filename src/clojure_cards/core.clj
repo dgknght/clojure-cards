@@ -18,11 +18,6 @@
         remaining-deck (drop 1 tail)]
     [drawn-card (concat head remaining-deck)]))
 
-(defn flush?
-  "Returns a boolean value indicating whether or not the specified cards contain a flush"
-  [cards]
-  (some #(>= (count %) 5) (partition-by first (sort-by first cards))))
-
 (defn rank->integer
   "Converts each rank into an integer equivalent"
   ([ranks] (rank->integer false ranks))
@@ -31,6 +26,21 @@
     (if aces-high
       (replace (hash-map 0 13) mapped)
       mapped))))
+
+(defn pair?
+  "Returns true if the specifiec cards contain a pair, nil if not"
+  [cards]
+  (->> cards
+       (map last)
+       rank->integer
+       sort
+       (partition-by identity)
+       (some #(>= (count %) 2))))
+
+(defn flush?
+  "Returns a boolean value indicating whether or not the specified cards contain a flush"
+  [cards]
+  (some #(>= (count %) 5) (partition-by first (sort-by first cards))))
 
 (defn five-in-sequence?
   "Returns true if the specified cards have 5 ranks in sequence, nil if not"

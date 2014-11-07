@@ -12,6 +12,14 @@
   (testing "Drawing a card returns the card"
     (is (= [:clubs :ace] (first (cards/draw-card (cards/deck) 0))))))
 
+(deftest is-a-pair
+  (testing "Correctly identifies a pair"
+    (is (true? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 4] [:diamonds 10] [:spades :king]]))))
+  (testing "Considers three-of-a-kind to also be a pair"
+    (is (true? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 4] [:diamonds 4] [:spades :king]]))))
+  (testing "Correctly does not identify a non-pair"
+    (is (nil? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 5] [:diamonds 10] [:spades :king]])))))
+
 (deftest is-a-flush
   (testing "Correctly identify a flush"
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
