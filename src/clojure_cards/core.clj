@@ -27,15 +27,25 @@
       (replace (hash-map 0 13) mapped)
       mapped))))
 
-(defn pair?
-  "Returns true if the specifiec cards contain a pair, nil if not"
-  [cards]
+(defn x-of-a-kind?
+  "Returns true if the hand contains at least the specified number of any rank, otherwise nil"
+  [cards kind-count]
   (->> cards
        (map last)
        rank->integer
        sort
        (partition-by identity)
-       (some #(>= (count %) 2))))
+       (some #(>= (count %) kind-count))))
+
+(defn pair?
+  "Returns true if the specifiec cards contain a pair, nil if not"
+  [cards]
+  (x-of-a-kind? cards 2))
+
+(defn three-of-a-kind?
+  "Returns true if the specified cards contain three of a kind, nil if not"
+  [cards]
+  (x-of-a-kind? cards 3))
 
 (defn flush?
   "Returns a boolean value indicating whether or not the specified cards contain a flush"

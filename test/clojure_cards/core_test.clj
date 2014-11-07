@@ -20,6 +20,10 @@
   (testing "Correctly does not identify a non-pair"
     (is (nil? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 5] [:diamonds 10] [:spades :king]])))))
 
+(deftest is-three-of-a-kind?
+  (testing "Correcting identifies three of a kind"
+    (is (true? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond 10]])))))
+
 (deftest is-a-flush
   (testing "Correctly identify a flush"
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
