@@ -71,6 +71,11 @@
   [cards]
   (x-of-a-kind? cards 3))
 
+(defn four-of-a-kind?
+  "Returns true if the specified cards contain three of a kind, false if not"
+  [cards]
+  (x-of-a-kind? cards 4))
+
 (defn flush?
   "Returns a boolean value indicating whether or not the specified cards contain a flush"
   [cards]

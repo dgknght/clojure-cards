@@ -32,6 +32,12 @@
   (testing "Correcting does not identify a hand without three of a kind"
     (is (false? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond :ace]])))))
 
+(deftest is-four-of-a-kind?
+  (testing "Correcting identifies four of a kind"
+    (is (true? (cards/four-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts 10] [:diamond 10]]))))
+  (testing "Correcting does not identify a hand without three of a kind"
+    (is (false? (cards/four-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond :ace]])))))
+
 (deftest is-a-flush
   (testing "Correctly identify a flush"
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))
