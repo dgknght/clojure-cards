@@ -40,10 +40,11 @@
 
 (defn x-of-a-kind?
   "Returns true if the hand contains at least the specified number of any rank, otherwise nil"
-  [cards kind-count]
+  ([cards kind-count] (x-of-a-kind? cards kind-count 1))
+  ([cards kind-count group-count]
   (let [rank-counts (get-rank-group-counts cards)
-        first-group-count (first rank-counts)]
-    (>= first-group-count kind-count)))
+        group-counts (take group-count rank-counts)]
+    (every? #(>= % kind-count) group-counts))))
 
 (defn pair?
   "Returns true if the specifiec cards contain a pair, nil if not"
@@ -51,9 +52,9 @@
   (x-of-a-kind? cards 2))
 
 (defn two-pair?
-  "Returns true if the specifiec cards contain two pair, nil if not"
+  "Returns true if the specifiec cards contain two pair, false if not"
   [cards]
-  nil)
+  (x-of-a-kind? cards 2 2))
 
 (defn three-of-a-kind?
   "Returns true if the specified cards contain three of a kind, nil if not"
