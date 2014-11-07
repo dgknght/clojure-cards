@@ -42,6 +42,11 @@
   [cards]
   (x-of-a-kind? cards 2))
 
+(defn two-pair?
+  "Returns true if the specifiec cards contain two pair, nil if not"
+  [cards]
+  nil)
+
 (defn three-of-a-kind?
   "Returns true if the specified cards contain three of a kind, nil if not"
   [cards]
