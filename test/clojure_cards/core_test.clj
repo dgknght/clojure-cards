@@ -44,6 +44,11 @@
   (testing "Returns false if not a flush"
     (is (false? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
 
+(deftest find-a-flush
+  (testing "Extracts the 5 cards making up a flush from a hand containing one"
+    (let [result (cards/find-flush [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]])]
+      (is (= #{2 4 6 8 10} (set (map last result)))))))
+
 (deftest is-a-straight
   (testing "Correctly identify a straight with a low ace"
     (is (true? (cards/straight? [[:clubs :ace] [:clubs 2] [:hearts 3] [:spades 4] [:clubs 5]]))))
@@ -53,3 +58,11 @@
     (is (true? (cards/straight? [[:clubs 2] [:hearts 3] [:spades 4] [:clubs 5] [:clubs 6] [:spades 7]]))))
   (testing "Returns false if no straight is present"
     (is (false? (cards/straight? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
+
+(deftest is-a-straight-flush
+  (testing "Correctly identify a straight flush"
+    (is (true? (cards/straight-flush? [[:clubs 5] [:clubs 9] [:clubs 7] [:clubs 6] [:clubs 8]]))))
+  (testing "returns false if there is no straight"
+    (is (false? (cards/straight-flush? [[:clubs 5] [:clubs 10] [:clubs 7] [:clubs 6] [:clubs 8]]))))
+  (testing "returns false if there is no flush"
+    (is (false? (cards/straight-flush? [[:clubs 5] [:hearts 9] [:clubs 7] [:clubs 6] [:clubs 8]])))))

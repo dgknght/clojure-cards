@@ -90,13 +90,19 @@
   [cards]
   (x-of-a-kind? cards 4))
 
+(defn find-flush
+  "Returns the cards making up a flush, if present in the specified cards"
+  [cards]
+  (->> cards
+       (sort-by #(first %))
+       (partition-by #(first %))
+       (filter #(>= (count %) 5))
+       (first)))
+
 (defn flush?
   "Returns a boolean value indicating whether or not the specified cards contain a flush"
   [cards]
-  (->> cards
-       get-suit-group-counts
-       first
-       (<= 5)))
+  (some? (find-flush cards)))
 
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise false"
@@ -109,6 +115,10 @@
           (and (seq aces-high) (<= 4 (first aces-high))) ; the count is of steps between cards, so 4 steps is a straight
           (and (seq aces-low) (<= 4 (first aces-low)))))))
 
+(defn straight-flush?
+  "Returns true if the specified cards contain a straight flush, otherwise false"
+  [cards]
+  false)
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
