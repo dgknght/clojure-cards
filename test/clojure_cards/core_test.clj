@@ -18,7 +18,7 @@
   (testing "Considers three-of-a-kind to also be a pair"
     (is (true? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 4] [:diamonds 4] [:spades :king]]))))
   (testing "Correctly does not identify a non-pair"
-    (is (nil? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 5] [:diamonds 10] [:spades :king]])))))
+    (is (false? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 5] [:diamonds 10] [:spades :king]])))))
 
 (deftest is-two-pair?
   (testing "Correctly identifies two pairs"

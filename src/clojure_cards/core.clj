@@ -27,15 +27,23 @@
       (replace (hash-map 0 13) mapped)
       mapped))))
 
-(defn x-of-a-kind?
-  "Returns true if the hand contains at least the specified number of any rank, otherwise nil"
-  [cards kind-count]
+(defn get-rank-group-counts
+  "Returns a sequence of numbers representing the count of matching ranks in the specified cards in descending count order. E.g. [[:clubs 2] [:clubs 3 ] [:hearts 2] [:diamonds 3] [:spades 10]] => (2 2 1); (two 2's, two 3's and 1 10)"
+  [cards]
   (->> cards
        (map last)
        rank->integer
        sort
        (partition-by identity)
-       (some #(>= (count %) kind-count))))
+       (map count)
+       (sort #(compare %2 %1))))
+
+(defn x-of-a-kind?
+  "Returns true if the hand contains at least the specified number of any rank, otherwise nil"
+  [cards kind-count]
+  (let [rank-counts (get-rank-group-counts cards)
+        first-group-count (first rank-counts)]
+    (>= first-group-count kind-count)))
 
 (defn pair?
   "Returns true if the specifiec cards contain a pair, nil if not"
