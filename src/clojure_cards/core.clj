@@ -48,6 +48,20 @@
        (map count)
        (sort #(compare %2 %1))))
 
+(defn get-sequence-group-counts
+  "Returns a sequence of numbers representing the count of cards in sequence by rank in descending order. E.g. [[:clubs 3] [:hearts 2] [:spades :king] [:hearts :queen] [:hearts 4]] => (3 2); ((2 3 4) (queen king))"
+  [aces-high cards]
+  (->> cards
+       (map last)
+       (rank->integer aces-high)
+       sort
+       (partition 2 1)
+       (map (fn [[low high]] (- high low)))
+       (partition-by identity)
+       (filter #(= 1 (first %)))
+       (map count)
+       (sort #(compare %2 %1))))
+
 (defn x-of-a-kind?
   "Returns true if the hand contains at least the specified number of any rank, otherwise false"
   ([cards kind-count] (x-of-a-kind? cards kind-count 1))
@@ -84,28 +98,16 @@
        first
        (<= 5)))
 
-(defn five-in-sequence?
-  "Returns true if the specified cards have 5 ranks in sequence, false if not"
-  [ranks]
-  (->> ranks
-       sort
-       (partition 2 1)
-       (map (fn [[low,high]] (- high low)))
-       (partition-by identity)
-       (map (fn [vals] [(first vals) (count vals)]))
-       (some #(and
-                 (= (first %) 1)
-                 (>= (last %) 4)))))
-
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise false"
   [cards]
-  (let [ranks (map last cards)
-        aces-low (rank->integer ranks)
-        aces-high (rank->integer true ranks)]
-      (or
-        (five-in-sequence? aces-high)
-        (five-in-sequence? aces-low))))
+  (let [aces-high (get-sequence-group-counts true cards)
+        aces-low (get-sequence-group-counts false cards)]
+    (if (not (and (seq aces-high) (seq aces-low)))
+      false
+        (or
+          (and (seq aces-high) (<= 4 (first aces-high))) ; the count is of steps between cards, so 4 steps is a straight
+          (and (seq aces-low) (<= 4 (first aces-low)))))))
 
 
 (defn -main

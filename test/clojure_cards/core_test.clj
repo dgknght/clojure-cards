@@ -51,5 +51,5 @@
     (is (true? (cards/straight? [[:clubs 10] [:clubs :jack] [:hearts :queen] [:spades :king] [:clubs :ace]]))))
   (testing "Correctly identify a straight with more than 5 cards"
     (is (true? (cards/straight? [[:clubs 2] [:hearts 3] [:spades 4] [:clubs 5] [:clubs 6] [:spades 7]]))))
-  (testing "Returns nil if no straight is present"
-    (is (nil? (cards/straight? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
+  (testing "Returns false if no straight is present"
+    (is (false? (cards/straight? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
