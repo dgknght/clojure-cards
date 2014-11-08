@@ -19,20 +19,26 @@
     [drawn-card (concat head remaining-deck)]))
 
 (defn rank->integer
+  "Converts a rank to an integer value for sorting"
+  ([rank] (rank->integer false rank))
+  ([aces-high rank]
+  (let [position (.indexOf all-ranks rank)]
+    (if (and (= position 0) aces-high)
+      (+ position (count all-ranks))
+      position))))
+
+(defn ranks->integers
   "Converts each rank into an integer equivalent"
-  ([ranks] (rank->integer false ranks))
+  ([ranks] (ranks->integers false ranks))
   ([aces-high ranks]
-  (let [mapped (map #(.indexOf all-ranks %) ranks)]
-    (if aces-high
-      (replace (hash-map 0 13) mapped)
-      mapped))))
+   (map #(rank->integer aces-high %) ranks)))
 
 (defn get-rank-group-counts
   "Returns a sequence of numbers representing the count of matching ranks in the specified cards in descending count order. E.g. [[:clubs 2] [:clubs 3 ] [:hearts 2] [:diamonds 3] [:spades 10]] => (2 2 1); (two 2's, two 3's and 1 10)"
   [cards]
   (->> cards
        (map last)
-       rank->integer
+       ranks->integers
        sort
        (partition-by identity)
        (map count)
@@ -53,7 +59,7 @@
   [aces-high cards]
   (->> cards
        (map last)
-       (rank->integer aces-high)
+       (ranks->integers aces-high)
        sort
        (partition 2 1)
        (map (fn [[low high]] (- high low)))
