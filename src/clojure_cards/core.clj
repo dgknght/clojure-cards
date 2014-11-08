@@ -110,6 +110,27 @@
   [cards]
   (some? (find-flush cards)))
 
+(defn find-straight
+  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
+  [cards]
+  (->> cards
+       (map #(vector % (rank->integer (last %))))
+       (sort-by #(last %) #(compare %2 %1))
+       (#(concat % [[[nil nil] nil]]))
+       (partition 2 1)
+       (map (let [seq-num (atom 0)]
+              (fn test-fn [[[high-card high-rank] [low-card low-rank]]]
+                (let [delta (if (nil? low-rank) -1 (- high-rank low-rank))
+                      result (vector high-card @seq-num)]
+                  (if (< 1 delta) (swap! seq-num inc))
+                  result))))
+       (partition-by #(last %))
+       (sort-by count #(compare %2 %1))
+       (filter #(>= (count %) 5))
+       first
+       (map first)
+       seq))
+
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise false"
   [cards]

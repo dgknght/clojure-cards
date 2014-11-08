@@ -59,6 +59,14 @@
   (testing "Returns false if no straight is present"
     (is (false? (cards/straight? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:hearts 10]])))))
 
+(deftest find-a-straight
+  (testing "Extracts the 5 cards making up a straight from a hand containing one"
+    (let [result (cards/find-straight [[:clubs 2] [:hearts 4] [:clubs 3] [:clubs :ace] [:spades 5]])]
+      (is (= #{:ace 2 3 4 5} (set (map last result))))))
+  (testing "Returns nil if the cards to not contain a straight"
+    (let [result (cards/find-straight [[:clubs 2] [:hearts 4] [:clubs :queen] [:clubs :king] [:spades 3]])]
+      (is (nil? result)))))
+
 (deftest is-a-straight-flush
   (testing "Correctly identify a straight flush"
     (is (true? (cards/straight-flush? [[:clubs 5] [:clubs 9] [:clubs 7] [:clubs 6] [:clubs 8]]))))
