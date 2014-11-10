@@ -100,8 +100,8 @@
   "Returns the cards making up a flush, if present in the specified cards"
   [cards]
   (->> cards
-       (sort-by #(first %))
-       (partition-by #(first %))
+       (sort-by first)
+       (partition-by first)
        (filter #(>= (count %) 5))
        (first)))
 
@@ -114,7 +114,7 @@
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
   [cards]
   (->> cards
-       (sort-by #(last %) #(compare %2 %1))
+       (sort-by last #(compare %2 %1))
        (#(concat % [[[nil nil] nil]]))
        (partition 2 1)
        (map (let [seq-num (atom 0)]
@@ -123,7 +123,7 @@
                       result (vector high-card @seq-num)]
                   (if (< 1 delta) (swap! seq-num inc))
                   result))))
-       (partition-by #(last %))
+       (partition-by last)
        (sort-by count #(compare %2 %1))
        (filter #(>= (count %) 5))
        first
@@ -175,7 +175,7 @@
   [cards]
   (->> cards
        (rank-cards true)
-       (sort-by #(last %) #(compare %2 %1))
+       (sort-by last #(compare %2 %1))
        (map first)
        (take 5)))
 
