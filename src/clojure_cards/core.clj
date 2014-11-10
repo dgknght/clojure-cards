@@ -110,11 +110,10 @@
   [cards]
   (some? (find-flush cards)))
 
-(defn find-straight
+(defn find-straight-in-ranked-cards
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
   [cards]
   (->> cards
-       (map #(vector % (rank->integer (last %))))
        (sort-by #(last %) #(compare %2 %1))
        (#(concat % [[[nil nil] nil]]))
        (partition 2 1)
@@ -131,16 +130,29 @@
        (map first)
        seq))
 
+(defn rank-card
+  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
+  [aces-high card]
+  (vector card (rank->integer aces-high (last card))))
+
+(defn rank-cards
+  "Returns a sequence of vectors containing the specified cards and their sortable rank."
+  [aces-high cards]
+  (map #(rank-card aces-high %) cards))
+
+(defn find-straight
+  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
+  [cards]
+  (let [aces-high (rank-cards true cards)
+        aces-low (rank-cards false cards)]
+    (or
+      (find-straight-in-ranked-cards aces-high)
+      (find-straight-in-ranked-cards aces-low))))
+
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise false"
   [cards]
-  (let [aces-high (get-sequence-group-counts true cards)
-        aces-low (get-sequence-group-counts false cards)]
-    (if (not (and (seq aces-high) (seq aces-low)))
-      false
-        (or
-          (and (seq aces-high) (<= 4 (first aces-high))) ; the count is of steps between cards, so 4 steps is a straight
-          (and (seq aces-low) (<= 4 (first aces-low)))))))
+  (some? (find-straight cards)))
 
 (defn straight-flush?
   "Returns true if the specified cards contain a straight flush, otherwise false"
