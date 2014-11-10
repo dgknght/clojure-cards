@@ -92,3 +92,9 @@
   (testing "Returns nil if no royal flush is present"
     (let [result (cards/find-royal-flush [[:clubs 9] [:clubs :queen] [:hearts :queen] [:clubs 10] [:clubs :king] [:clubs :jack] [:diamonds :queen]])]
       (is (nil? result)))))
+
+(deftest find-a-high-card
+  (testing "Correctly returns the cards in the right order when only a high card is present"
+    (let [cards [[:clubs 4] [:hearts 8] [:spades 10] [:clubs 9] [:diamonds 3] [:diamonds 5] [:hearts :king]]
+          result (cards/find-high-card cards)]
+      (is (= [:king 10 9 8 5] (map #(last %) result))))))

@@ -170,6 +170,15 @@
   (let [sf (find-straight-flush cards)]
     (if (= :ace (last (first sf))) sf nil)))
 
+(defn find-high-card
+  "Returns the cards sorted by descending rank"
+  [cards]
+  (->> cards
+       (rank-cards true)
+       (sort-by #(last %) #(compare %2 %1))
+       (map first)
+       (take 5)))
+
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
