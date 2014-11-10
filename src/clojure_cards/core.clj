@@ -154,10 +154,15 @@
   [cards]
   (some? (find-straight cards)))
 
+(defn find-straight-flush
+  "Returns the cards making up a straight flush from the specified cards, if a straight flush exists. Otherwise nil."
+  [cards]
+  (find-flush (find-straight cards)))
+
 (defn straight-flush?
   "Returns true if the specified cards contain a straight flush, otherwise false"
   [cards]
-  false)
+  (some? (find-straight-flush cards)))
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
