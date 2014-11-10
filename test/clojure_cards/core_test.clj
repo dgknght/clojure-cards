@@ -74,3 +74,12 @@
     (is (false? (cards/straight-flush? [[:clubs 5] [:clubs 10] [:clubs 7] [:clubs 6] [:clubs 8]]))))
   (testing "returns false if there is no flush"
     (is (false? (cards/straight-flush? [[:clubs 5] [:hearts 9] [:clubs 7] [:clubs 6] [:clubs 8]])))))
+
+(deftest find-a-straight-flush
+  (testing "Correctly returns the straight flush from a hand that includes one"
+    (let [result (cards/find-straight-flush [[:clubs 7] [:clubs 5] [:hearts 5] [:clubs 3] [:clubs 6] [:clubs 4] [:diamonds 5]])]
+      (is (= #{3 4 5 6 7} (set (map last result))))
+      (is (= #{:clubs} (set (map first result))))))
+  (testing "Returns nil if no straight flush is present"
+    (let [result (cards/find-straight-flush [[:spades 7] [:clubs 5] [:hearts 5] [:clubs 3] [:clubs 6] [:clubs 4] [:diamonds 5]])]
+      (is (nil? result)))))
