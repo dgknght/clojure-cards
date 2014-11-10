@@ -83,3 +83,12 @@
   (testing "Returns nil if no straight flush is present"
     (let [result (cards/find-straight-flush [[:spades 7] [:clubs 5] [:hearts 5] [:clubs 3] [:clubs 6] [:clubs 4] [:diamonds 5]])]
       (is (nil? result)))))
+
+(deftest find-a-royal-flush
+  (testing "Correctly returns the royal flush from a hand that includes one"
+    (let [result (cards/find-royal-flush [[:clubs :ace] [:clubs :queen] [:hearts :queen] [:clubs 10] [:clubs :king] [:clubs :jack] [:diamonds :queen]])]
+      (is (= #{10 :jack :queen :king :ace} (set (map last result))))
+      (is (= #{:clubs} (set (map first result))))))
+  (testing "Returns nil if no royal flush is present"
+    (let [result (cards/find-royal-flush [[:clubs 9] [:clubs :queen] [:hearts :queen] [:clubs 10] [:clubs :king] [:clubs :jack] [:diamonds :queen]])]
+      (is (nil? result)))))

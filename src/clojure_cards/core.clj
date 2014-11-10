@@ -164,6 +164,12 @@
   [cards]
   (some? (find-straight-flush cards)))
 
+(defn find-royal-flush
+  "Returns the cards that make up a royal flush from the specified cards, if present. Otherwise nil."
+  [cards]
+  (let [sf (find-straight-flush cards)]
+    (if (= :ace (last (first sf))) sf nil)))
+
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
