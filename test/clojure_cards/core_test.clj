@@ -12,6 +12,14 @@
   (testing "Drawing a card returns the card"
     (is (= [:clubs :ace] (first (cards/draw-card (cards/deck) 0))))))
 
+(deftest find-a-pair
+  (testing "Returns the cards making up the pair hand with present"
+    (let [cards [[:clubs :king] [:clubs 10] [:hearts :king] [:hearts 4] [:diamonds :ace] [:diamonds 8] [:spades :6]]
+          result (cards/find-pair cards)]
+      (is (not (nil? result)))
+      (is (= 5 (count result)))
+      (is (= [:king :king :ace 10 8] (map last result))))))
+
 (deftest is-a-pair
   (testing "Correctly identifies a pair"
     (is (true? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 4] [:diamonds 10] [:spades :king]]))))

@@ -125,16 +125,6 @@
         group-counts (take group-count rank-counts)]
     (every? #(>= % kind-count) group-counts))))
 
-(defn pair?
-  "Returns true if the specifiec cards contain a pair, false if not"
-  [cards]
-  (x-of-a-kind? cards 2))
-
-(defn two-pair?
-  "Returns true if the specifiec cards contain two pair, false if not"
-  [cards]
-  (x-of-a-kind? cards 2 2))
-
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
   [match-count cards]
@@ -146,6 +136,21 @@
         first-group
         (take (- 5 (count first-group)) remaining-cards)
       nil))))
+
+(defn find-pair
+  "Returns the cards making up a pair hand, or nil if no such hand can be made from the specified cards."
+  [cards]
+  (find-n-of-a-kind 2 cards))
+
+(defn pair?
+  "Returns true if the specifiec cards contain a pair, false if not"
+  [cards]
+  (some? (find-pair cards)))
+
+(defn two-pair?
+  "Returns true if the specifiec cards contain two pair, false if not"
+  [cards]
+  (x-of-a-kind? cards 2 2))
 
 (defn find-three-of-a-kind
   "Returns the cards that make up a three-of-a-kind hand from the specified cards, or nil if no such hand can be made."
