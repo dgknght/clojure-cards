@@ -38,6 +38,14 @@
   (testing "Correcting does not identify a hand without three of a kind"
     (is (false? (cards/four-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond :ace]])))))
 
+(deftest find-a-four-of-a-kind
+  (testing "Returns the correct cards if they contain four of a kind"
+    (let [cards [[:clubs 10] [:clubs 9] [:spades 10] [:hearts 10] [:diamonds 10] [:hearts 3] [:diamonds 5]]
+          result (cards/find-four-of-a-kind cards)]
+      (printf "result=%s\n" result)
+      (is (not (nil? result)))
+      (is (every? #(= 10 %) (take 4 (map last result)))))))
+
 (deftest is-a-flush
   (testing "Correctly identify a flush"
     (is (true? (cards/flush? [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]]))))

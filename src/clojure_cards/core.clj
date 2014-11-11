@@ -68,6 +68,45 @@
        (map count)
        (sort #(compare %2 %1))))
 
+(defn rank-card
+  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
+  [aces-high card]
+  (vector card (rank->integer aces-high (last card))))
+
+(defn rank-cards
+  "Returns a sequence of vectors containing the specified cards and their sortable rank."
+  [aces-high cards]
+  (map #(rank-card aces-high %) cards))
+
+(defn find-straight-in-ranked-cards
+  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
+  [cards]
+  (->> cards
+       (sort-by last #(compare %2 %1))
+       (#(concat % [[[nil nil] nil]]))
+       (partition 2 1)
+       (map (let [seq-num (atom 0)]
+              (fn test-fn [[[high-card high-rank] [low-card low-rank]]]
+                (let [delta (if (nil? low-rank) -1 (- high-rank low-rank))
+                      result (vector high-card @seq-num)]
+                  (if (< 1 delta) (swap! seq-num inc))
+                  result))))
+       (partition-by last)
+       (sort-by count #(compare %2 %1))
+       (filter #(>= (count %) 5))
+       first
+       (map first)
+       seq))
+
+(defn find-straight
+  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
+  [cards]
+  (let [aces-high (rank-cards true cards)
+        aces-low (rank-cards false cards)]
+    (or
+      (find-straight-in-ranked-cards aces-high)
+      (find-straight-in-ranked-cards aces-low))))
+
 (defn x-of-a-kind?
   "Returns true if the hand contains at least the specified number of any rank, otherwise false"
   ([cards kind-count] (x-of-a-kind? cards kind-count 1))
@@ -91,6 +130,25 @@
   [cards]
   (x-of-a-kind? cards 3))
 
+(defn group-and-sort-by-rank
+  "Returns the specified cards grouped by rank and sorted by descending group count."
+  [cards]
+  (->> cards
+       (rank-cards true)
+       (sort-by last #(compare %2 %1))
+       (partition-by last)
+       (sort-by count #(compare %2 %1))
+       (map #(map first %))))
+
+(defn find-four-of-a-kind
+  "Returns the cards making up a four-of-a-kind hand if present, nil if not"
+  [cards]
+  (let [grouped-by-rank (group-and-sort-by-rank cards)]
+    (printf "grouped=%s\n" grouped-by-rank)
+    (if (= 4 (count (first grouped-by-rank)))
+      (concat (first grouped-by-rank) (first (nth grouped-by-rank 1)))
+      nil)))
+
 (defn four-of-a-kind?
   "Returns true if the specified cards contain three of a kind, false if not"
   [cards]
@@ -109,45 +167,6 @@
   "Returns a boolean value indicating whether or not the specified cards contain a flush"
   [cards]
   (some? (find-flush cards)))
-
-(defn find-straight-in-ranked-cards
-  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
-  [cards]
-  (->> cards
-       (sort-by last #(compare %2 %1))
-       (#(concat % [[[nil nil] nil]]))
-       (partition 2 1)
-       (map (let [seq-num (atom 0)]
-              (fn test-fn [[[high-card high-rank] [low-card low-rank]]]
-                (let [delta (if (nil? low-rank) -1 (- high-rank low-rank))
-                      result (vector high-card @seq-num)]
-                  (if (< 1 delta) (swap! seq-num inc))
-                  result))))
-       (partition-by last)
-       (sort-by count #(compare %2 %1))
-       (filter #(>= (count %) 5))
-       first
-       (map first)
-       seq))
-
-(defn rank-card
-  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
-  [aces-high card]
-  (vector card (rank->integer aces-high (last card))))
-
-(defn rank-cards
-  "Returns a sequence of vectors containing the specified cards and their sortable rank."
-  [aces-high cards]
-  (map #(rank-card aces-high %) cards))
-
-(defn find-straight
-  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
-  [cards]
-  (let [aces-high (rank-cards true cards)
-        aces-low (rank-cards false cards)]
-    (or
-      (find-straight-in-ranked-cards aces-high)
-      (find-straight-in-ranked-cards aces-low))))
 
 (defn straight?
   "Returns true if the specified cards contain a straight, otherwise false"
