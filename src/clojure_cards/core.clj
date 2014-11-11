@@ -163,6 +163,19 @@
   [cards]
   (some? (find-three-of-a-kind cards)))
 
+;; This can probably be combined with find-two-pair in some way, but I wasn't ready to take that on
+(defn find-full-house
+  "Returns the cards making up a full house or nil if no such hand can be made from the specified cards."
+  [cards]
+  (let [grouped (group-and-sort-by-rank cards)
+        first-group (first grouped)
+        first-group-count (count first-group)
+        second-group (nth grouped 1)
+        second-group-count (count second-group)]
+    (if (and (= 3 first-group-count) (<= 2 second-group-count))
+      (concat first-group (take 2 second-group))
+      nil)))
+
 (defn find-four-of-a-kind
   "Returns the cards making up a four-of-a-kind hand if present, nil if not"
   [cards]

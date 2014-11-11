@@ -56,6 +56,18 @@
       (is (= 5 (count result)))
       (is (= [:king :king :king 10 8] (map last result))))))
 
+(deftest find-a-full-house
+  (testing "Returns the cards making up a full house when present"
+    (let [cards [[:clubs :king] [:clubs 10] [:diamonds 3] [:diamonds 10] [:spades :king] [:spades 5] [:hearts :king]]
+          result (cards/find-full-house cards)]
+      (is (not (nil? result)))
+      (is (= 5 (count result)))
+      (is (= [:king :king :king 10 10] (map last result)))))
+  (testing "Returns nil if no full house can be made"
+    (let [cards [[:clubs :king] [:clubs 10] [:diamonds 3] [:diamonds 10] [:spades :jack] [:spades 5] [:hearts :king]]
+          result (cards/find-full-house cards)]
+      (is (nil? result)))))
+
 (deftest is-four-of-a-kind?
   (testing "Correcting identifies four of a kind"
     (is (true? (cards/four-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts 10] [:diamond 10]]))))
