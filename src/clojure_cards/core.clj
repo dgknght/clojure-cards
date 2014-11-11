@@ -53,17 +53,6 @@
        (sort-by count #(compare %2 %1))
        (map #(map first %))))
 
-(defn get-rank-group-counts
-  "Returns a sequence of numbers representing the count of matching ranks in the specified cards in descending count order. E.g. [[:clubs 2] [:clubs 3 ] [:hearts 2] [:diamonds 3] [:spades 10]] => (2 2 1); (two 2's, two 3's and 1 10)"
-  [cards]
-  (->> cards
-       (map last)
-       ranks->integers
-       sort
-       (partition-by identity)
-       (map count)
-       (sort #(compare %2 %1))))
-
 (defn get-suit-group-counts
   "Returns a sequence of numbers representing the count of matching suits in the specified cards in descending count order. E.g. [[:clubs 5] [:hearts 9] [:spades 5] [:clubs :ace] [:clubs :queen]] => (3 1 1); (three clubs, one heart, one spade)"
   [cards]
@@ -116,14 +105,6 @@
     (or
       (find-straight-in-ranked-cards aces-high)
       (find-straight-in-ranked-cards aces-low))))
-
-(defn x-of-a-kind?
-  "Returns true if the hand contains at least the specified number of any rank, otherwise false"
-  ([cards kind-count] (x-of-a-kind? cards kind-count 1))
-  ([cards kind-count group-count]
-  (let [rank-counts (get-rank-group-counts cards)
-        group-counts (take group-count rank-counts)]
-    (every? #(>= % kind-count) group-counts))))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
