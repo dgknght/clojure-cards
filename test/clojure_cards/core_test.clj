@@ -28,6 +28,14 @@
   (testing "Correctly does not identify a non-pair"
     (is (false? (cards/pair? [[:clubs 4] [:clubs 8] [:hearts 5] [:diamonds 10] [:spades :king]])))))
 
+(deftest find-a-two-pair
+  (testing "Returns the cards making up the pair hand with present"
+    (let [cards [[:clubs :king] [:clubs 10] [:hearts :king] [:hearts 4] [:diamonds 10] [:diamonds 8] [:spades :6]]
+          result (cards/find-two-pair cards)]
+      (is (not (nil? result)))
+      (is (= 5 (count result)))
+      (is (= [:king :king 10 10 8] (map last result))))))
+
 (deftest is-two-pair?
   (testing "Correctly identifies two pairs"
     (is (true? (cards/two-pair? [[:clubs 9] [:hearts 10] [:diamonds 9] [:diamonds 8] [:spades 10]]))))

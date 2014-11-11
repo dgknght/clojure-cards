@@ -147,10 +147,30 @@
   [cards]
   (some? (find-pair cards)))
 
+(defn find-two-pair
+  "Returns the cards making of a two-pair hand, or nil if no such hand can be made from the specified cards."
+  [cards]
+  (let [grouped (group-and-sort-by-rank cards)
+        first-group (first grouped)
+        first-group-count (count first-group)
+        second-group (nth grouped 1)
+        second-group-count (count second-group)
+        remaining-cards (apply concat (rest (rest grouped)))]
+    (if (= 4 first-group-count)
+      (concat first-group (first second-group))
+      (if (and (<= 2 first-group-count) (<= 2 second-group-count))
+        (concat
+          first-group
+          second-group
+          (take
+            (- 5 (+ first-group-count second-group-count))
+            remaining-cards))
+        nil))))
+
 (defn two-pair?
   "Returns true if the specifiec cards contain two pair, false if not"
   [cards]
-  (x-of-a-kind? cards 2 2))
+  (some? (find-two-pair cards)))
 
 (defn find-three-of-a-kind
   "Returns the cards that make up a three-of-a-kind hand from the specified cards, or nil if no such hand can be made."
