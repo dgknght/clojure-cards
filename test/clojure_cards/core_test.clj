@@ -141,3 +141,55 @@
     (let [cards [[:clubs 4] [:hearts 8] [:spades 10] [:clubs 9] [:diamonds 3] [:diamonds 5] [:hearts :king]]
           result (cards/find-high-card cards)]
       (is (= [:king 10 9 8 5] (map #(last %) result))))))
+
+(deftest evaluate-a-hand
+  (testing "Correctly identify a royal flush"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds 3] [:spades :king] [:spades :ace] [:hearts 3] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :royal-flush (first result)))
+      (is (= [[:spades :ace] [:spades :king] [:spades :queen] [:spades :jack] [:spades 10]] (last result)))))
+  (testing "Correctly identify a straight flush"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds 3] [:spades :king] [:spades 9] [:hearts 3] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :straight-flush (first result)))
+      (is (= [[:spades :king] [:spades :queen] [:spades :jack] [:spades 10] [:spades 9]] (last result)))))
+  (testing "Correctly identify 4 of a kind"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :jack] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :four-of-a-kind (first result)))
+      (is (= [[:spades :king] [:spades :queen] [:spades :jack] [:spades 10] [:spades 9]] (last result)))))
+  (testing "Correctly identify a full house"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :full-house (first result)))
+      (is (= [[:spades :jack] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :ace]] (last result)))))
+  (testing "Correctly identify a flush"
+    (let [cards [[:spades :jack] [:spades 10] [:spades 4] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :flush (first result)))
+      (is (= [[:spades :jack] [:spades 10] [:spades 4] [:spades :ace] [:spades :queen]] (last result)))))
+  (testing "Correctly identify a straight"
+    (let [cards [[:clubs 4] [:hearts 3] [:diamonds 6] [:spades 5] [:spades :ace] [:diamonds 7] [:hearts :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :straight (first result)))
+      (is (= [[:diamonds 7] [:diamonds 6] [:spades 5] [:clubs 4] [:hearts 3]] (last result)))))
+  (testing "Correctly identify 3 of a kind"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :king] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :three-of-a-kind (first result)))
+      (is (= [[:spades :jack] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :king]] (last result)))))
+  (testing "Correctly identify two pair"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :two-pair (first result)))
+      (is (= [[:spades :ace] [:clubs :ace] [:spades :jack] [:hearts :jack] [:spades :queen]] (last result)))))
+  (testing "Correctly identify a pair"
+    (let [cards [[:spades :jack] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades 4] [:clubs :ace] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :pair (first result)))
+      (is (= [[:spades :jack] [:hearts :jack] [:clubs :ace] [:spades :queen] [:spades 10]] (last result)))))
+  (testing "Correctly identify a high-card"
+    (let [cards [[:spades :9] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades 4] [:clubs :ace] [:spades :queen]]
+          result (cards/evaluate-hand cards)]
+      (is (= :high-card (first result)))
+      (is (= [:ace :queen :jack 10 9] (map last (last result)))))))

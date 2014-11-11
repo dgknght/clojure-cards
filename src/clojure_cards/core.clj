@@ -230,6 +230,14 @@
        (map first)
        (take 5)))
 
+(def hand-strength-functions [find-royal-flush find-straight-flush find-four-of-a-kind find-full-house find-flush find-straight find-three-of-a-kind find-two-pair find-pair find-high-card])
+(defn evaluate-hand
+  "Returns the hand's strength and the cards that make up that strength"
+  [cards]
+  (some #(seq (% cards)) hand-strength-functions))
+
+
+
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
