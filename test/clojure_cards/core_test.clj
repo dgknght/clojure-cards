@@ -42,7 +42,6 @@
   (testing "Returns the correct cards if they contain four of a kind"
     (let [cards [[:clubs 10] [:clubs 9] [:spades 10] [:hearts 10] [:diamonds 10] [:hearts 3] [:diamonds 5]]
           result (cards/find-four-of-a-kind cards)]
-      (printf "result=%s\n" result)
       (is (not (nil? result)))
       (is (every? #(= 10 %) (take 4 (map last result)))))))
 

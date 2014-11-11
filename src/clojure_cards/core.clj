@@ -144,7 +144,6 @@
   "Returns the cards making up a four-of-a-kind hand if present, nil if not"
   [cards]
   (let [grouped-by-rank (group-and-sort-by-rank cards)]
-    (printf "grouped=%s\n" grouped-by-rank)
     (if (= 4 (count (first grouped-by-rank)))
       (concat (first grouped-by-rank) (first (nth grouped-by-rank 1)))
       nil)))
@@ -152,7 +151,7 @@
 (defn four-of-a-kind?
   "Returns true if the specified cards contain three of a kind, false if not"
   [cards]
-  (x-of-a-kind? cards 4))
+  (some? (find-four-of-a-kind cards)))
 
 (defn find-flush
   "Returns the cards making up a flush, if present in the specified cards"
