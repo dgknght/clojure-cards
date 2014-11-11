@@ -33,6 +33,26 @@
   ([aces-high ranks]
    (map #(rank->integer aces-high %) ranks)))
 
+(defn rank-card
+  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
+  [aces-high card]
+  (vector card (rank->integer aces-high (last card))))
+
+(defn rank-cards
+  "Returns a sequence of vectors containing the specified cards and their sortable rank."
+  [aces-high cards]
+  (map #(rank-card aces-high %) cards))
+
+(defn group-and-sort-by-rank
+  "Returns the specified cards grouped by rank and sorted by descending group count."
+  [cards]
+  (->> cards
+       (rank-cards true)
+       (sort-by last #(compare %2 %1))
+       (partition-by last)
+       (sort-by count #(compare %2 %1))
+       (map #(map first %))))
+
 (defn get-rank-group-counts
   "Returns a sequence of numbers representing the count of matching ranks in the specified cards in descending count order. E.g. [[:clubs 2] [:clubs 3 ] [:hearts 2] [:diamonds 3] [:spades 10]] => (2 2 1); (two 2's, two 3's and 1 10)"
   [cards]
@@ -67,16 +87,6 @@
        (filter #(= 1 (first %)))
        (map count)
        (sort #(compare %2 %1))))
-
-(defn rank-card
-  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
-  [aces-high card]
-  (vector card (rank->integer aces-high (last card))))
-
-(defn rank-cards
-  "Returns a sequence of vectors containing the specified cards and their sortable rank."
-  [aces-high cards]
-  (map #(rank-card aces-high %) cards))
 
 (defn find-straight-in-ranked-cards
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
@@ -125,28 +135,32 @@
   [cards]
   (x-of-a-kind? cards 2 2))
 
+(defn find-n-of-a-kind
+  "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
+  [match-count cards]
+  (let [grouped-by-rank (group-and-sort-by-rank cards)
+        first-group (first grouped-by-rank)
+        remaining-cards (apply concat (rest grouped-by-rank))]
+    (if (<= match-count (count first-group))
+      (concat
+        first-group
+        (take (- 5 (count first-group)) remaining-cards)
+      nil))))
+
+(defn find-three-of-a-kind
+  "Returns the cards that make up a three-of-a-kind hand from the specified cards, or nil if no such hand can be made."
+  [cards]
+  (find-n-of-a-kind 3 cards))
+
 (defn three-of-a-kind?
   "Returns true if the specified cards contain three of a kind, false if not"
   [cards]
-  (x-of-a-kind? cards 3))
-
-(defn group-and-sort-by-rank
-  "Returns the specified cards grouped by rank and sorted by descending group count."
-  [cards]
-  (->> cards
-       (rank-cards true)
-       (sort-by last #(compare %2 %1))
-       (partition-by last)
-       (sort-by count #(compare %2 %1))
-       (map #(map first %))))
+  (some? (find-three-of-a-kind cards)))
 
 (defn find-four-of-a-kind
   "Returns the cards making up a four-of-a-kind hand if present, nil if not"
   [cards]
-  (let [grouped-by-rank (group-and-sort-by-rank cards)]
-    (if (= 4 (count (first grouped-by-rank)))
-      (concat (first grouped-by-rank) (first (nth grouped-by-rank 1)))
-      nil)))
+  (find-n-of-a-kind 4 cards))
 
 (defn four-of-a-kind?
   "Returns true if the specified cards contain three of a kind, false if not"

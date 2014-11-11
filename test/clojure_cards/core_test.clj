@@ -32,6 +32,14 @@
   (testing "Correcting does not identify a hand without three of a kind"
     (is (false? (cards/three-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts :ace] [:diamond :ace]])))))
 
+(deftest find-a-three-of-a-kind
+  (testing "Returns the three-of-a-kind hand from the specified cards when one is present"
+    (let [cards [[:clubs :king] [:clubs 10] [:hearts :king] [:hearts 4] [:diamonds :king] [:diamonds 8] [:spades :6]]
+          result (cards/find-three-of-a-kind cards)]
+      (is (not (nil? result)))
+      (is (= 5 (count result)))
+      (is (= [:king :king :king 10 8] (map last result))))))
+
 (deftest is-four-of-a-kind?
   (testing "Correcting identifies four of a kind"
     (is (true? (cards/four-of-a-kind? [[:clubs 10] [:clubs 9] [:spades 10] [:hearts 10] [:diamond 10]]))))
