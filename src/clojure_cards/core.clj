@@ -99,12 +99,15 @@
 
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
-  [cards]
+  ([cards] (find-straight 5 cards))
+  ([max-length cards]
   (let [aces-high (rank-cards true cards)
-        aces-low (rank-cards false cards)]
-    (or
-      (find-straight-in-ranked-cards aces-high)
-      (find-straight-in-ranked-cards aces-low))))
+        aces-low (rank-cards false cards)
+        result (or
+                 (find-straight-in-ranked-cards aces-high)
+                 (find-straight-in-ranked-cards aces-low))]
+    (if-not (nil? result) (take max-length result))
+    )))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
@@ -208,7 +211,7 @@
 (defn find-straight-flush
   "Returns the cards making up a straight flush from the specified cards, if a straight flush exists. Otherwise nil."
   [cards]
-  (find-flush (find-straight cards)))
+  (find-flush (find-straight (count cards) cards)))
 
 (defn straight-flush?
   "Returns true if the specified cards contain a straight flush, otherwise false"
