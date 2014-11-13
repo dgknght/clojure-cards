@@ -230,11 +230,28 @@
        (map first)
        (take 5)))
 
-(def hand-strength-functions [find-royal-flush find-straight-flush find-four-of-a-kind find-full-house find-flush find-straight find-three-of-a-kind find-two-pair find-pair find-high-card])
+(def hand-strength-functions [[find-royal-flush :royal-flush]
+                              [find-straight-flush :straigh-flush]
+                              [find-four-of-a-kind :four-of-a-kind]
+                              [find-full-house :full-house]
+                              [find-flush :flush]
+                              [find-straight :straight]
+                              [find-three-of-a-kind :three-of-a-kind]
+                              [find-two-pair :two-pair]
+                              [find-pair :pair]
+                              [find-high-card :high-card]])
+(defn decorate-fn
+  "Executes a hand strength function and returns a symbol indentifying the hand string if the function returns a non-nil value."
+  [[f k] cards]
+  (let [result (f cards)]
+    (if (nil? result)
+      nil
+      [k result])))
+
 (defn evaluate-hand
   "Returns the hand's strength and the cards that make up that strength"
   [cards]
-  (some #(seq (% cards)) hand-strength-functions))
+  (some #(seq (decorate-fn % cards)) hand-strength-functions))
 
 
 
