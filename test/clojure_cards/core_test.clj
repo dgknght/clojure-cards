@@ -67,14 +67,14 @@
                           [:diamonds :queen]])
 (def two-pair-hand[[:clubs 9]
                    [:clubs :queen]
-                   [:hearts 10]
+                   [:hearts 3]
                    [:diamonds 7]
                    [:spades :jack]
                    [:clubs :jack]
                    [:diamonds :queen]])
 (def pair-hand[[:clubs 9]
                [:clubs :queen]
-               [:hearts 10]
+               [:hearts 3]
                [:diamonds 7]
                [:spades 5]
                [:clubs :jack]
@@ -101,8 +101,7 @@
   (testing "Returns the cards making up the pair hand with present"
     (let [result (cards/find-pair pair-hand)]
       (is (not (nil? result)))
-      (is (= 5 (count result)))
-      (is (= [:queen :queen :jack 10 9] (map last result)))))
+      (is (= [:queen :queen :jack 9 7] (map last result)))))
   (testing "Considers three-of-a-kind to also be a pair"
     (let [result (cards/find-pair three-of-a-kind-hand)]
       (is (= [:queen :queen :queen :jack 9] (map last result)))))
@@ -115,7 +114,7 @@
     (let [result (cards/find-two-pair two-pair-hand)]
       (is (not (nil? result)))
       (is (= 5 (count result)))
-      (is (= [:queen :queen :jack :jack 10] (map last result))))))
+      (is (= [:queen :queen :jack :jack 9] (map last result))))))
 
 
 
@@ -201,52 +200,32 @@
 
 (deftest evaluate-a-hand
   (testing "Correctly identify a royal flush"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds 3] [:spades :king] [:spades :ace] [:hearts 3] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :royal-flush (first result)))
-      (is (= [[:spades :ace] [:spades :king] [:spades :queen] [:spades :jack] [:spades 10]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand royal-flush-hand)]
+      (is (= :royal-flush strength))))
   (testing "Correctly identify a straight flush"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds 3] [:spades :king] [:spades 9] [:hearts 3] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :straight-flush (first result)))
-      (is (= [[:spades :king] [:spades :queen] [:spades :jack] [:spades 10] [:spades 9]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand straight-flush-hand)]
+      (is (= :straight-flush strength))))
   (testing "Correctly identify 4 of a kind"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :jack] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :four-of-a-kind (first result)))
-      (is (= [[:spades :king] [:spades :queen] [:spades :jack] [:spades 10] [:spades 9]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand four-of-a-kind-hand)]
+      (is (= :four-of-a-kind strength))))
   (testing "Correctly identify a full house"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :full-house (first result)))
-      (is (= [[:spades :jack] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :ace]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand full-house-hand)]
+      (is (= :full-house strength))))
   (testing "Correctly identify a flush"
-    (let [cards [[:spades :jack] [:spades 10] [:spades 4] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :flush (first result)))
-      (is (= [[:spades :jack] [:spades 10] [:spades 4] [:spades :ace] [:spades :queen]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand flush-hand)]
+      (is (= :flush strength))))
   (testing "Correctly identify a straight"
-    (let [cards [[:clubs 4] [:hearts 3] [:diamonds 6] [:spades 5] [:spades :ace] [:diamonds 7] [:hearts :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :straight (first result)))
-      (is (= [[:diamonds 7] [:diamonds 6] [:spades 5] [:clubs 4] [:hearts 3]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand straight-hand)]
+      (is (= :straight strength))))
   (testing "Correctly identify 3 of a kind"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :king] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :three-of-a-kind (first result)))
-      (is (= [[:spades :jack] [:diamonds :jack] [:hearts :jack] [:spades :ace] [:clubs :king]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand three-of-a-kind-hand)]
+      (is (= :three-of-a-kind strength))))
   (testing "Correctly identify two pair"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades :ace] [:clubs :ace] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :two-pair (first result)))
-      (is (= [[:spades :ace] [:clubs :ace] [:spades :jack] [:hearts :jack] [:spades :queen]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand two-pair-hand)]
+      (is (= :two-pair strength))))
   (testing "Correctly identify a pair"
-    (let [cards [[:spades :jack] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades 4] [:clubs :ace] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :pair (first result)))
-      (is (= [[:spades :jack] [:hearts :jack] [:clubs :ace] [:spades :queen] [:spades 10]] (last result)))))
+    (let [[strength _] (cards/evaluate-hand pair-hand)]
+      (is (= :pair strength))))
   (testing "Correctly identify a high-card"
-    (let [cards [[:spades :9] [:spades 10] [:diamonds 8] [:hearts :jack] [:spades 4] [:clubs :ace] [:spades :queen]]
-          result (cards/evaluate-hand cards)]
-      (is (= :high-card (first result)))
-      (is (= [:ace :queen :jack 10 9] (map last (last result)))))))
+    (let [[strength _] (cards/evaluate-hand high-card-hand)]
+      (is (= :high-card strength)))))
