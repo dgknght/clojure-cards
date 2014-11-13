@@ -89,13 +89,13 @@
 
 (deftest deck-has-52-cards
   (testing "A new deck should have 52 cards"
-    (is (= 52 (count (cards/deck))))))
+    (is (= 52 (count (cards/new-deck))))))
 
 (deftest draw-a-card
   (testing "Drawing a card removes it from the deck"
-    (is (= 51 (count (last (cards/draw-card (cards/deck) 1))))))
+    (is (= 51 (count (last (cards/draw-card (cards/new-deck) 1))))))
   (testing "Drawing a card returns the card"
-    (is (= [:clubs :ace] (first (cards/draw-card (cards/deck) 0))))))
+    (is (= [:clubs :ace] (first (cards/draw-card (cards/new-deck) 0))))))
 
 (deftest find-a-pair
   (testing "Returns the cards making up the pair hand with present"
@@ -229,3 +229,16 @@
   (testing "Correctly identify a high-card"
     (let [[strength _] (cards/evaluate-hand high-card-hand)]
       (is (= :high-card strength)))))
+
+(deftest deal-a-hand
+  (testing "Gives the right number of cards to a single hand"
+    (let [result (cards/deal 1 5 (new-deck))]
+      (is (= 1 (count result)))
+      (let [[hand] result]
+        (is (= [[:clubs :ace] [:clubs 2] [:clubs 3] [:clubs 4] [:clubs 5]] hand) "The single hand should have the right cards"))))
+  (testing "Gives the right number of cards in the right order to two different hands"
+    (let [result (cards/deal 2 5 (new-deck))]
+      (is (= 2 (count result)))
+      (let [[hand1 hand2] result]
+        (is (= [[:clubs :ace] [:clubs 3] [:clubs 5] [:clubs 7] [:clubs 9]] hand1) "The first hand should have the right cards")
+        (is (= [[:clubs 2] [:clubs 4] [:clubs 6] [:clubs 8] [:clubs 10]] hand2) "The second hand should have the right cards")))))

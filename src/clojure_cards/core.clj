@@ -4,7 +4,7 @@
 (def all-suits [:clubs :diamonds :hearts :spades])
 (def all-ranks [:ace 2 3 4 5 6 7 8 9 10 :jack :queen :king])
 
-(defn deck
+(defn new-deck
   "Returns a new unshuffled deck"
   []
   (for [suit all-suits rank all-ranks]
@@ -12,11 +12,12 @@
 
 (defn draw-card
   "Returns an array containing two elements: the drawn card and the remaining deck"
-  [deck position]
+  ([deck] (draw-card deck 0))
+  ([deck position]
   (let [[head,tail] (split-at position deck)
         drawn-card (first tail)
         remaining-deck (drop 1 tail)]
-    [drawn-card (concat head remaining-deck)]))
+    [drawn-card (concat head remaining-deck)])))
 
 (defn rank->integer
   "Converts a rank to an integer value for sorting"
@@ -256,11 +257,21 @@
   [cards]
   (some #(seq (decorate-fn % cards)) hand-strength-functions))
 
+(defn deal
+  "Deals out x number of hands containing y number of cards from the specified deck"
+  [hand-count card-count cards]
+  nil)
 
+(defn five-card-draw
+  "Deals 2 hands of 5 cards and declares a winner"
+  []
+  (let [deck (shuffle (new-deck))
+        hands (deal 2 5 deck)]
+    (for [hand hands]
+      (let [[strength cards] (evaluate-hand hand)]
+        (printf "%s: %s" strength cards)))))
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
-  (let [hand (take 5 (shuffle(deck)))]
-    (println hand)
-    hand))
+  (five-card-draw))
