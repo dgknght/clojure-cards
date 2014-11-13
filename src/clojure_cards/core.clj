@@ -231,7 +231,7 @@
        (take 5)))
 
 (def hand-strength-functions [[find-royal-flush :royal-flush]
-                              [find-straight-flush :straigh-flush]
+                              [find-straight-flush :straight-flush]
                               [find-four-of-a-kind :four-of-a-kind]
                               [find-full-house :full-house]
                               [find-flush :flush]
