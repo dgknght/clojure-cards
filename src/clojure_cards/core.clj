@@ -268,14 +268,15 @@
 
 (defn five-card-draw
   "Deals 2 hands of 5 cards and declares a winner"
-  []
-  (let [deck (shuffle (new-deck))
-        hands (deal 2 5 deck)]
-    (for [hand hands]
-      (let [[strength cards] (evaluate-hand hand)]
-        (printf "%s: %s" strength cards)))))
+  [player-count]
+  (println "five card draw")
+  (->> (new-deck)
+       shuffle
+       (deal player-count 5)
+       (map evaluate-hand)
+       (println)))
 
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
-  (five-card-draw))
+  (five-card-draw 3))
