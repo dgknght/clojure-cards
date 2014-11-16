@@ -257,10 +257,18 @@
   [cards]
   (some #(seq (decorate-fn % cards)) hand-strength-functions))
 
+(defn transpose
+  "Transposes an sequence of sequences such that [[1 2] [3 4] [5 6]] becomes [[1 3 5] [2 4 6]]"
+  [values]
+  nil)
+
 (defn deal
   "Deals out x number of hands containing y number of cards from the specified deck"
   [hand-count card-count cards]
-  nil)
+  (->> cards
+       (take (* hand-count card-count))
+       (partition hand-count)
+       transpose))
 
 (defn five-card-draw
   "Deals 2 hands of 5 cards and declares a winner"
