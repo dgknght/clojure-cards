@@ -170,6 +170,10 @@
       (is (= [7 6 5 4 3] (map last result)))))
   (testing "Returns false if no straight is present"
     (let [result (cards/find-straight high-card-hand)]
+      (is (nil? result))))
+  (testing "Is not confused by duplicate ranks"
+    (let [cards [[:clubs 3] [:hearts 4] [:clubs 4] [:diamonds 5] [:spades 6]]
+          result (cards/find-straight cards)]
       (is (nil? result)))))
 
 (deftest find-a-straight-flush

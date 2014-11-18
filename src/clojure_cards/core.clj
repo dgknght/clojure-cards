@@ -92,8 +92,10 @@
                   (if (< 1 delta) (swap! seq-num inc))
                   result))))
        (partition-by last)
-       (sort-by count #(compare %2 %1))
-       (filter #(>= (count %) 5))
+       (map #(vector % (count (set (map (fn [[[_ rank]  _]] rank) %)))))
+       (sort-by last #(compare %2 %1))
+       (filter #(>= (last %) 5))
+       first
        first
        (map first)
        seq))
