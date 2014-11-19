@@ -280,8 +280,19 @@
 
 (defn sortable-hand
   "Returns a sequence containing the specified evaluate hand and an integer that can be used to compare this hand to other evaluated hands"
-  [hand]
-  (vector (.indexOf (map last hand-strength-functions) (first hand)) hand))
+  [[strength cards]]
+  (let [index (.indexOf (reverse (map last hand-strength-functions)) strength)]
+    (vector index strength cards)))
+
+(defn compare-hands
+  "Returns compare-like results for two sortable hands"
+  [[index1 strength1 cards1] [index2 strength2 cards2]]
+  (let [primary-result (compare index1 index2)]
+    (if (= 0 primary-result)
+      (let [rank1 (rank->integer true (last (first cards1)))
+            rank2 (rank->integer true (last (first cards2)))]
+          (compare rank1 rank2))
+      primary-result)))
 
 (defn winner
   "Returns the strongest hand from the specified list of hands"
@@ -289,8 +300,8 @@
   (->> hands
        (map evaluate-hand)
        (map sortable-hand)
-       (sort-by first)
-       (map last)
+       (sort-by identity #(compare-hands %2 %1))
+       (map rest)
        first))
 
 (defn -main

@@ -266,3 +266,9 @@
     (is (= :straight-flush (first (cards/winner four-of-a-kind-hand straight-flush-hand)))))
   (testing "royal flush beats straight flush"
     (is (= :royal-flush (first (cards/winner straight-flush-hand royal-flush-hand))))))
+
+(deftest compare-same-strength-hands
+  (testing "A higher card beats a high card"
+    (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts 6]]]
+      (is (= [:spades :ace]
+             ((fn [[_ [first-card]]] first-card) (cards/winner high-card-hand other-hand)))))))
