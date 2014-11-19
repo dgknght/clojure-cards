@@ -271,4 +271,9 @@
   (testing "A higher card beats a high card"
     (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts 6]]]
       (is (= [:spades :ace]
-             ((fn [[_ [first-card]]] first-card) (cards/winner high-card-hand other-hand)))))))
+             ((fn [[_ [first-card]]] first-card) (cards/winner high-card-hand other-hand))))))
+  (testing "A higher pair beats a pair"
+    (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts :ace]]
+          [_ winning-cards] (cards/winner pair-hand other-hand)
+          [[_ highest-rank]] winning-cards]
+      (is (= :ace highest-rank)))))
