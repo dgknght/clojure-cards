@@ -269,9 +269,10 @@
 
 (deftest compare-same-strength-hands
   (testing "A higher card beats a high card"
-    (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts 6]]]
-      (is (= [:spades :ace]
-             ((fn [[_ [first-card]]] first-card) (cards/winner high-card-hand other-hand))))))
+    (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts 6]]
+          [_ winning-cards] (cards/winner high-card-hand other-hand)
+          highest-card (first winning-cards)]
+      (is (= [:spades :ace] highest-card))))
   (testing "A higher pair beats a pair"
     (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts :ace]]
           [_ winning-cards] (cards/winner pair-hand other-hand)
