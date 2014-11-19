@@ -277,4 +277,9 @@
     (let [other-hand [[:spades 5] [:diamonds 8] [:clubs 3] [:spades :ace] [:hearts :ace]]
           [_ winning-cards] (cards/winner pair-hand other-hand)
           [[_ highest-rank]] winning-cards]
+      (is (= :ace highest-rank))))
+  (testing "A higher pair of two beats another two pair"
+    (let [other-hand [[:spades 5] [:diamonds 5] [:clubs 3] [:spades :ace] [:hearts :ace]]
+          [_ winning-cards] (cards/winner two-pair-hand other-hand)
+          [[_ highest-rank]] winning-cards]
       (is (= :ace highest-rank)))))
