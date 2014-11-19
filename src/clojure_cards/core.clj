@@ -278,6 +278,21 @@
        (map evaluate-hand)
        (println)))
 
+(defn sortable-hand
+  "Returns a sequence containing the specified evaluate hand and an integer that can be used to compare this hand to other evaluated hands"
+  [hand]
+  (vector (.indexOf (map last hand-strength-functions) (first hand)) hand))
+
+(defn winner
+  "Returns the strongest hand from the specified list of hands"
+  [& hands]
+  (->> hands
+       (map evaluate-hand)
+       (map sortable-hand)
+       (sort-by first)
+       (map last)
+       first))
+
 (defn -main
   "Deals some cards and evaluates the hand strength"
   [& args]
