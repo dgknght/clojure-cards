@@ -95,8 +95,7 @@
        (map #(vector % (count (set (map (fn [[[_ rank]  _]] rank) %)))))
        (sort-by last #(compare %2 %1))
        (filter #(>= (last %) 5))
-       first
-       first
+       ffirst
        (map first)
        seq))
 
