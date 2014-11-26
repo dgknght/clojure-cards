@@ -97,6 +97,34 @@
   (testing "Drawing a card returns the card"
     (is (= [:clubs :ace] (first (cards/draw-card (cards/new-deck) 0))))))
 
+(deftest increment-a-card-rank
+  (testing "A two becomes a three"
+    (is (= [:clubs 3] (cards/inc-rank [:clubs 2]))))
+  (testing "A three becomes a four"
+    (is (= [:clubs 4] (cards/inc-rank [:clubs 3]))))
+  (testing "A four becomes a five"
+    (is (= [:clubs 5] (cards/inc-rank [:clubs 4]))))
+  (testing "A five becomes a six"
+    (is (= [:clubs 6] (cards/inc-rank [:clubs 5]))))
+  (testing "A six becomes a seven"
+    (is (= [:clubs 7] (cards/inc-rank [:clubs 6]))))
+  (testing "A seven becomes a eight"
+    (is (= [:clubs 8] (cards/inc-rank [:clubs 7]))))
+  (testing "A eight becomes a nine"
+    (is (= [:clubs 9] (cards/inc-rank [:clubs 8]))))
+  (testing "A nine becomes a 10"
+    (is (= [:clubs 10] (cards/inc-rank [:clubs 9]))))
+  (testing "A 10 beomes a jack"
+    (is (= [:hearts :jack] (cards/inc-rank [:hearts 10]))))
+  (testing "A jack beomes a queen"
+    (is (= [:hearts :queen] (cards/inc-rank [:hearts :jack]))))
+  (testing "A queen beomes a king"
+    (is (= [:hearts :king] (cards/inc-rank [:hearts :queen]))))
+  (testing "A king beomes an ace"
+    (is (= [:hearts :ace] (cards/inc-rank [:hearts :king]))))
+  (testing "A ace beomes a 2"
+    (is (= [:hearts 2] (cards/inc-rank [:hearts :ace])))))
+
 (deftest find-a-pair
   (testing "Returns the cards making up the pair hand with present"
     (let [result (cards/find-pair pair-hand)]

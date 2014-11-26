@@ -2,7 +2,7 @@
   (:gen-class))
 
 (def all-suits [:clubs :diamonds :hearts :spades])
-(def all-ranks [:ace :2 :3 :4 :5 :6 :7 :8 :9 :10 :jack :queen :king])
+(def all-ranks [:2 :3 :4 :5 :6 :7 :8 :9 :10 :jack :queen :king :ace])
 
 (defn new-deck
   "Returns a new unshuffled deck"
@@ -27,6 +27,11 @@
     (if (and (= position 0) aces-high)
       (+ position (count all-ranks))
       position))))
+
+(defn integer->rank
+  "Converts an integer to the rank equivalent"
+  [integer]
+  (nth all-ranks integer))
 
 (defn ranks->integers
   "Converts each rank into an integer equivalent"
@@ -78,38 +83,23 @@
        (map count)
        (sort #(compare %2 %1))))
 
-(defn find-straight-in-ranked-cards
-  "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
-  [cards]
-  (->> cards
-       (sort-by last #(compare %2 %1))
-       (#(concat % [[[nil nil] nil]]))
-       (partition 2 1)
-       (map (let [seq-num (atom 0)]
-              (fn test-fn [[[high-card high-rank] [low-card low-rank]]]
-                (let [delta (if (nil? low-rank) -1 (- high-rank low-rank))
-                      result (vector high-card @seq-num)]
-                  (if (< 1 delta) (swap! seq-num inc))
-                  result))))
-       (partition-by last)
-       (map #(vector % (count (set (map (fn [[[_ rank]  _]] rank) %)))))
-       (sort-by last #(compare %2 %1))
-       (filter #(>= (last %) 5))
-       ffirst
-       (map first)
-       seq))
+(defn inc-rank
+  "Returns a card having the next highest rank in the same suit"
+  [[suit rank]]
+  (vector suit (-> rank
+                   rank->integer
+                   (+ 1)
+                   (mod (count all-ranks))
+                   integer->rank)))
 
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
   ([cards] (find-straight 5 cards))
   ([max-length cards]
-  (let [aces-high (rank-cards true cards)
-        aces-low (rank-cards false cards)
-        result (or
-                 (find-straight-in-ranked-cards aces-high)
-                 (find-straight-in-ranked-cards aces-low))]
-    (if-not (nil? result) (take max-length result))
-    )))
+  (let [successors (map inc-rank cards)]
+    (printf "cards=%s\n" cards)
+    (printf "successors=%s\n" (seq successors))
+    cards)))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
