@@ -92,14 +92,45 @@
                    (mod (count all-ranks))
                    integer->rank)))
 
+(defn missing
+  "Returns the cards in list1 not present in list2"
+  [list1 list2]
+  (filter
+    (fn [[_ rank1]]
+      (not-any?
+        (fn [[_ rank2]] (= rank1 rank2))
+        list2))
+    list1))
+
+(defn find-straight-in-n-cards
+  "Returns the cards if they make up a straight, otherwise nil"
+  [cards]
+  (let [successors (map inc-rank cards)
+        cards-not-matched (missing cards successors)
+        successors-not-matched (missing successors cards)]
+;    (printf "cards=%s\n" (seq cards))
+;    (printf "successors=%s\n" (seq successors))
+;    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
+;    (printf "successors-not-matched%s\n" (seq successors-not-matched))
+    (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
+      (sort #(compare (last %2) (last %1)) cards))))
+
+(defn sort-cards
+  "Returns the cards sorted in descending order of rank"
+  [cards]
+  (->> cards
+       (map #(vector % (rank->integer (last %))))
+       (sort (fn [[_ r1] [_ r2]] (compare r2 r1)))
+       (map first)))
+
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
   ([cards] (find-straight 5 cards))
-  ([max-length cards]
-  (let [successors (map inc-rank cards)]
-    (printf "cards=%s\n" cards)
-    (printf "successors=%s\n" (seq successors))
-    cards)))
+  ([length-of-hand cards]
+  (->> cards
+       sort-cards
+       (partition length-of-hand 1)
+       (some #(find-straight-in-n-cards %)))))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
