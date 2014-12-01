@@ -102,19 +102,6 @@
         list2))
     list1))
 
-(defn find-straight-in-n-cards
-  "Returns the cards if they make up a straight, otherwise nil"
-  [cards]
-  (let [successors (map inc-rank cards)
-        cards-not-matched (missing cards successors)
-        successors-not-matched (missing successors cards)]
-    (printf "cards=%s\n" (seq cards))
-    (printf "successors=%s\n" (seq successors))
-    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
-    (printf "successors-not-matched%s\n" (seq successors-not-matched))
-    (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
-      (sort #(compare (last %2) (last %1)) cards))))
-
 (defn sort-cards
   "Returns the cards sorted in descending order of rank"
   [cards]
@@ -122,6 +109,15 @@
        (map #(vector % (rank->integer (last %))))
        (sort (fn [[_ r1] [_ r2]] (compare r2 r1)))
        (map first)))
+
+(defn find-straight-in-n-cards
+  "Returns the cards if they make up a straight, otherwise nil"
+  [cards]
+  (let [successors (map inc-rank cards)
+        cards-not-matched (missing cards successors)
+        successors-not-matched (missing successors cards)]
+    (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
+      (sort-cards cards))))
 
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
