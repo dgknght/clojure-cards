@@ -95,7 +95,7 @@
   (testing "Drawing a card removes it from the deck"
     (is (= 51 (count (last (cards/draw-card (cards/new-deck) 1))))))
   (testing "Drawing a card returns the card"
-    (is (= [:clubs :ace] (first (cards/draw-card (cards/new-deck) 0))))))
+    (is (= [:clubs :2] (first (cards/draw-card (cards/new-deck) 0))))))
 
 (deftest increment-a-card-rank
   (testing "A two becomes a three"
@@ -207,7 +207,7 @@
       (is (= [:5 :4 :3 :2 :ace] (map last result)))))
   (testing "Correctly identify a straight with a high ace"
     (let [result (cards/find-straight ace-high-straight-hand)]
-      (is (= [:ace :king :queen :jack 10] (map last result))))))
+      (is (= [:ace :king :queen :jack :10] (map last result))))))
 ;  (testing "Correctly identify a straight with more than 5 cards"
 ;    (let [result (cards/find-straight [[:clubs :2] [:hearts :3] [:spades :4] [:clubs :5] [:clubs :6] [:spades :7]])]
 ;      (is (= [7 6 5 4 3] (map last result)))))
@@ -282,13 +282,13 @@
     (let [result (cards/deal 1 5 (new-deck))]
       (is (= 1 (count result)))
       (let [[hand] result]
-        (is (= [[:clubs :ace] [:clubs :2] [:clubs :3] [:clubs :4] [:clubs :5]] hand) "The single hand should have the right cards"))))
+        (is (= [[:clubs :2] [:clubs :3] [:clubs :4] [:clubs :5] [:clubs :6]] hand) "The single hand should have the right cards"))))
   (testing "Gives the right number of cards in the right order to two different hands"
     (let [result (cards/deal 2 5 (new-deck))]
       (is (= 2 (count result)))
       (let [[hand1 hand2] result]
-        (is (= [[:clubs :ace] [:clubs :3] [:clubs :5] [:clubs :7] [:clubs :9]] hand1) "The first hand should have the right cards")
-        (is (= [[:clubs :2] [:clubs :4] [:clubs :6] [:clubs :8] [:clubs :10]] hand2) "The second hand should have the right cards")))))
+        (is (= [[:clubs :2] [:clubs :4] [:clubs :6] [:clubs :8] [:clubs :10]] hand1) "The first hand should have the right cards")
+        (is (= [[:clubs :3] [:clubs :5] [:clubs :7] [:clubs :9] [:clubs :jack]] hand2) "The second hand should have the right cards")))))
 
 (deftest find-a-winner
   (testing "A pair beats a high card"
