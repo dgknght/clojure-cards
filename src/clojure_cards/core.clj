@@ -2,7 +2,7 @@
   (:gen-class))
 
 (def all-suits [:clubs :diamonds :hearts :spades])
-(def all-ranks [:ace 2 3 4 5 6 7 8 9 10 :jack :queen :king])
+(def all-ranks [:ace :2 :3 :4 :5 :6 :7 :8 :9 :10 :jack :queen :king])
 
 (defn new-deck
   "Returns a new unshuffled deck"
@@ -55,7 +55,7 @@
        (map #(map first %))))
 
 (defn get-suit-group-counts
-  "Returns a sequence of numbers representing the count of matching suits in the specified cards in descending count order. E.g. [[:clubs 5] [:hearts 9] [:spades 5] [:clubs :ace] [:clubs :queen]] => (3 1 1); (three clubs, one heart, one spade)"
+  "Returns a sequence of numbers representing the count of matching suits in the specified cards in descending count order. E.g. [[:clubs :5] [:hearts :9] [:spades :5] [:clubs :ace] [:clubs :queen]] => (3 1 1); (three clubs, one heart, one spade)"
   [cards]
   (->> cards
        (map first)
@@ -65,7 +65,7 @@
        (sort #(compare %2 %1))))
 
 (defn get-sequence-group-counts
-  "Returns a sequence of numbers representing the count of cards in sequence by rank in descending order. E.g. [[:clubs 3] [:hearts 2] [:spades :king] [:hearts :queen] [:hearts 4]] => (3 2); ((2 3 4) (queen king))"
+  "Returns a sequence of numbers representing the count of cards in sequence by rank in descending order. E.g. [[:clubs :3] [:hearts :2] [:spades :king] [:hearts :queen] [:hearts :4]] => (3 2); ((2 3 4) (queen king))"
   [aces-high cards]
   (->> cards
        (map last)
