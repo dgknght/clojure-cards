@@ -328,6 +328,6 @@
       (is (= :ace highest-rank))))
   (testing "A higher second pair of two beats another two pair with a matching high pair"
     (let [other-hand [[:spades :5] [:diamonds :5] [:clubs :3] [:spades :queen] [:hearts :queen]]
-          [_ winning-cards] (cards/winner other-hand two-pair-hand)
+          [_ winning-cards] (cards/winner other-hand two-pair-hand) ; pair of jacks, pair of queens
           [_ _ [_ highest-rank]] winning-cards]
-      (is (= :jack highest-rank)))))
+      (is (= :jack highest-rank))))) ; queens and jacks beats queens and fives

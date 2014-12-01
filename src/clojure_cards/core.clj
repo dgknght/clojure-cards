@@ -307,7 +307,7 @@
     (if (= 0 primary-result)
       (let [rank1 (rank->integer true (last (first cards1)))
             rank2 (rank->integer true (last (first cards2)))]
-          (compare rank1 rank2))
+        (compare rank1 rank2))
       primary-result)))
 
 (defn winner
