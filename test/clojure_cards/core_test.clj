@@ -292,23 +292,23 @@
 
 (deftest find-a-winner
   (testing "A pair beats a high card"
-    (is (= :pair (first (cards/winner high-card-hand pair-hand))))))
-;  (testing "two-pair beats a pair"
-;    (is (= :two-pair (first (cards/winner pair-hand two-pair-hand)))))
-;  (testing "three-of-a-kind beats two-pair"
-;    (is (= :three-of-a-kind (first (cards/winner two-pair-hand three-of-a-kind-hand)))))
-;  (testing "straight beats three-of-a-kind"
-;    (is (= :straight (first (cards/winner three-of-a-kind-hand straight-hand)))))
-;  (testing "flush beats straight"
-;    (is (= :flush (first (cards/winner straight-hand flush-hand)))))
-;  (testing "full house beats flush"
-;    (is (= :full-house (first (cards/winner flush-hand full-house-hand)))))
-;  (testing "four-of-a-kind beats full house"
-;    (is (= :four-of-a-kind (first (cards/winner full-house-hand four-of-a-kind-hand)))))
-;  (testing "straight-flush beats four-of-a-kind"
-;    (is (= :straight-flush (first (cards/winner four-of-a-kind-hand straight-flush-hand)))))
-;  (testing "royal flush beats straight flush"
-;    (is (= :royal-flush (first (cards/winner straight-flush-hand royal-flush-hand))))))
+    (is (= :pair (first (cards/winner high-card-hand pair-hand)))))
+  (testing "two-pair beats a pair"
+    (is (= :two-pair (first (cards/winner pair-hand two-pair-hand)))))
+  (testing "three-of-a-kind beats two-pair"
+    (is (= :three-of-a-kind (first (cards/winner two-pair-hand three-of-a-kind-hand)))))
+  (testing "straight beats three-of-a-kind"
+    (is (= :straight (first (cards/winner three-of-a-kind-hand straight-hand)))))
+  (testing "flush beats straight"
+    (is (= :flush (first (cards/winner straight-hand flush-hand)))))
+  (testing "full house beats flush"
+    (is (= :full-house (first (cards/winner flush-hand full-house-hand)))))
+  (testing "four-of-a-kind beats full house"
+    (is (= :four-of-a-kind (first (cards/winner full-house-hand four-of-a-kind-hand)))))
+  (testing "straight-flush beats four-of-a-kind"
+    (is (= :straight-flush (first (cards/winner four-of-a-kind-hand straight-flush-hand)))))
+  (testing "royal flush beats straight flush"
+    (is (= :royal-flush (first (cards/winner straight-flush-hand royal-flush-hand))))))
 
 (deftest compare-same-strength-hands
   (testing "A higher card beats a high card"

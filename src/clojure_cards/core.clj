@@ -108,10 +108,10 @@
   (let [successors (map inc-rank cards)
         cards-not-matched (missing cards successors)
         successors-not-matched (missing successors cards)]
-;    (printf "cards=%s\n" (seq cards))
-;    (printf "successors=%s\n" (seq successors))
-;    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
-;    (printf "successors-not-matched%s\n" (seq successors-not-matched))
+    (printf "cards=%s\n" (seq cards))
+    (printf "successors=%s\n" (seq successors))
+    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
+    (printf "successors-not-matched%s\n" (seq successors-not-matched))
     (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
       (sort #(compare (last %2) (last %1)) cards))))
 
