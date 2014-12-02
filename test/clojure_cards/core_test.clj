@@ -177,17 +177,17 @@
       (is (= [:5 :4 :3 :2 :ace] (map last result)))))
   (testing "Correctly identify a straight with a high ace"
     (let [result (cards/find-straight ace-high-straight-hand)]
-      (is (= [:ace :king :queen :jack :10] (map last result))))))
-;  (testing "Correctly identify a straight with more than 5 cards"
-;    (let [result (cards/find-straight [[:clubs :2] [:hearts :3] [:spades :4] [:clubs :5] [:clubs :6] [:spades :7]])]
-;      (is (= [7 6 5 4 3] (map last result)))))
-;  (testing "Returns false if no straight is present"
-;    (let [result (cards/find-straight high-card-hand)]
-;      (is (nil? result))))
-;  (testing "Is not confused by duplicate ranks"
-;    (let [cards [[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6]]
-;          result (cards/find-straight cards)]
-;      (is (nil? result)))))
+      (is (= [:ace :king :queen :jack :10] (map last result)))))
+  (testing "Correctly identify a straight with more than 5 cards"
+    (let [result (cards/find-straight [[:clubs :2] [:hearts :3] [:spades :4] [:clubs :5] [:clubs :6] [:spades :7]])]
+      (is (= [:7 :6 :5 :4 :3] (map last result)))))
+  (testing "Returns false if no straight is present"
+    (let [result (cards/find-straight high-card-hand)]
+      (is (nil? result))))
+  (testing "Is not confused by duplicate ranks"
+    (let [cards [[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6]]
+          result (cards/find-straight cards)]
+      (is (nil? result)))))
 
 (deftest find-a-straight-flush
   (testing "Correctly returns the straight flush from a hand that includes one"

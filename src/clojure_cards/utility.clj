@@ -71,11 +71,15 @@
        (sort (fn [[_ r1] [_ r2]] (compare r2 r1)))
        (map first)))
 
-(defn find-straight-in-n-cards
+(defn get-full-sequence
   "Returns the cards if they make up a straight, otherwise nil"
   [cards]
   (let [successors (map inc-rank cards)
         cards-not-matched (missing cards successors)
         successors-not-matched (missing successors cards)]
+
+    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
+    (printf "successors-not-matched=%s\n" (seq successors-not-matched))
+
     (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
       (sort-cards cards))))

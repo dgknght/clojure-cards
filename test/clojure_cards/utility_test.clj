@@ -62,3 +62,18 @@
           expected [[:hearts :ace] [:spades :jack] [:diamonds :7] [:clubs :5]]
           result (sort-cards cards)]
       (is (= expected result)))))
+
+(deftest get-a-full-sequence
+  (testing "Returns the cards in sequence if they are all in a sequence"
+    (let [cards [[:clubs :5] [:hearts :7] [:spades :3] [:diamonds :6] [:clubs :4]]
+          expected [[:hearts :7] [:diamonds :6] [:clubs :5] [:clubs :4] [:spades :3]]
+          result (get-full-sequence cards)]
+      (is (= expected result))))
+  (testing "Returns nil if all cards are not part of a sequence"
+    (let [cards [[:clubs :ace] [:hearts :7] [:spades :3] [:diamonds :6] [:clubs :4]]
+          result (get-full-sequence cards)]
+      (is (nil? result))))
+  (testing "Returns nil if a duplicate rank is present"
+    (let [cards [[:clubs :5] [:hearts :7] [:spades :5] [:diamonds :6] [:clubs :4]]
+          result (get-full-sequence cards)]
+      (is (nil? result)))))

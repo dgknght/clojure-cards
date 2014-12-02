@@ -24,7 +24,7 @@
   (->> cards
        sort-cards
        (partition length-of-hand 1)
-       (some #(find-straight-in-n-cards %)))))
+       (some #(get-full-sequence %)))))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"
