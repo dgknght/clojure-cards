@@ -5,11 +5,12 @@
 
 (defn rank->integer
   "Converts a rank to an integer value for sorting"
-  ([rank] (rank->integer false rank))
+  ([rank] (rank->integer true rank))
   ([aces-high rank]
-  (let [position (.indexOf all-ranks rank)]
-    (if (and (= position 0) aces-high)
-      (+ position (count all-ranks))
+  (let [position (.indexOf all-ranks rank)
+        rank-count (count all-ranks)]
+    (if (and (= (+ 1 position) rank-count) (not aces-high))
+      (- position rank-count)
       position))))
 
 (defn integer->rank
@@ -42,30 +43,6 @@
        (partition-by last)
        (sort-by count #(compare %2 %1))
        (map #(map first %))))
-
-(defn get-suit-group-counts
-  "Returns a sequence of numbers representing the count of matching suits in the specified cards in descending count order. E.g. [[:clubs :5] [:hearts :9] [:spades :5] [:clubs :ace] [:clubs :queen]] => (3 1 1); (three clubs, one heart, one spade)"
-  [cards]
-  (->> cards
-       (map first)
-       sort
-       (partition-by identity)
-       (map count)
-       (sort #(compare %2 %1))))
-
-(defn get-sequence-group-counts
-  "Returns a sequence of numbers representing the count of cards in sequence by rank in descending order. E.g. [[:clubs :3] [:hearts :2] [:spades :king] [:hearts :queen] [:hearts :4]] => (3 2); ((2 3 4) (queen king))"
-  [aces-high cards]
-  (->> cards
-       (map last)
-       (ranks->integers aces-high)
-       sort
-       (partition 2 1)
-       (map (fn [[low high]] (- high low)))
-       (partition-by identity)
-       (filter #(= 1 (first %)))
-       (map count)
-       (sort #(compare %2 %1))))
 
 (defn inc-rank
   "Returns a card having the next highest rank in the same suit"
