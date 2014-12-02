@@ -1,8 +1,6 @@
 (ns clojure-cards.core
-  (:gen-class))
-
-(def all-suits [:clubs :diamonds :hearts :spades])
-(def all-ranks [:2 :3 :4 :5 :6 :7 :8 :9 :10 :jack :queen :king :ace])
+  (:gen-class)
+  (load "utility"))
 
 (defn new-deck
   "Returns a new unshuffled deck"
@@ -18,106 +16,6 @@
         drawn-card (first tail)
         remaining-deck (drop 1 tail)]
     [drawn-card (concat head remaining-deck)])))
-
-(defn rank->integer
-  "Converts a rank to an integer value for sorting"
-  ([rank] (rank->integer false rank))
-  ([aces-high rank]
-  (let [position (.indexOf all-ranks rank)]
-    (if (and (= position 0) aces-high)
-      (+ position (count all-ranks))
-      position))))
-
-(defn integer->rank
-  "Converts an integer to the rank equivalent"
-  [integer]
-  (nth all-ranks integer))
-
-(defn ranks->integers
-  "Converts each rank into an integer equivalent"
-  ([ranks] (ranks->integers false ranks))
-  ([aces-high ranks]
-   (map #(rank->integer aces-high %) ranks)))
-
-(defn rank-card
-  "Returns a vector containing the specified card in the first position and the sortable rank in the second."
-  [aces-high card]
-  (vector card (rank->integer aces-high (last card))))
-
-(defn rank-cards
-  "Returns a sequence of vectors containing the specified cards and their sortable rank."
-  [aces-high cards]
-  (map #(rank-card aces-high %) cards))
-
-(defn group-and-sort-by-rank
-  "Returns the specified cards grouped by rank and sorted by descending group count."
-  [cards]
-  (->> cards
-       (rank-cards true)
-       (sort-by last #(compare %2 %1))
-       (partition-by last)
-       (sort-by count #(compare %2 %1))
-       (map #(map first %))))
-
-(defn get-suit-group-counts
-  "Returns a sequence of numbers representing the count of matching suits in the specified cards in descending count order. E.g. [[:clubs :5] [:hearts :9] [:spades :5] [:clubs :ace] [:clubs :queen]] => (3 1 1); (three clubs, one heart, one spade)"
-  [cards]
-  (->> cards
-       (map first)
-       sort
-       (partition-by identity)
-       (map count)
-       (sort #(compare %2 %1))))
-
-(defn get-sequence-group-counts
-  "Returns a sequence of numbers representing the count of cards in sequence by rank in descending order. E.g. [[:clubs :3] [:hearts :2] [:spades :king] [:hearts :queen] [:hearts :4]] => (3 2); ((2 3 4) (queen king))"
-  [aces-high cards]
-  (->> cards
-       (map last)
-       (ranks->integers aces-high)
-       sort
-       (partition 2 1)
-       (map (fn [[low high]] (- high low)))
-       (partition-by identity)
-       (filter #(= 1 (first %)))
-       (map count)
-       (sort #(compare %2 %1))))
-
-(defn inc-rank
-  "Returns a card having the next highest rank in the same suit"
-  [[suit rank]]
-  (vector suit (-> rank
-                   rank->integer
-                   (+ 1)
-                   (mod (count all-ranks))
-                   integer->rank)))
-
-(defn missing
-  "Returns the cards in list1 not present in list2"
-  [list1 list2]
-  (filter
-    (fn [[_ rank1]]
-      (not-any?
-        (fn [[_ rank2]] (= rank1 rank2))
-        list2))
-    list1))
-
-(defn sort-cards
-  "Returns the cards sorted in descending order of rank"
-  [cards]
-  (->> cards
-       (map #(vector % (rank->integer (last %))))
-       (sort (fn [[_ r1] [_ r2]] (compare r2 r1)))
-       (map first)))
-
-(defn find-straight-in-n-cards
-  "Returns the cards if they make up a straight, otherwise nil"
-  [cards]
-  (let [successors (map inc-rank cards)
-        cards-not-matched (missing cards successors)
-        successors-not-matched (missing successors cards)]
-    (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
-      (sort-cards cards))))
 
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
@@ -262,8 +160,9 @@
                               [find-two-pair :two-pair]
                               [find-pair :pair]
                               [find-high-card :high-card]])
+
 (defn decorate-fn
-  "Executes a hand strength function and returns a symbol indentifying the hand string if the function returns a non-nil value."
+  "Executes a function returning nil if the function returns nil, otherwise a vector containing the key associated with the function and the results of the function."
   [[f k] cards]
   (let [result (f cards)]
     (if (nil? result)
