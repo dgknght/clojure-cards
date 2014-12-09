@@ -169,10 +169,10 @@
     (let [cards [[:clubs :4] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]]
           result (cards/find-straight cards)]
       (is (nil? result))))
-;  (testing "Returns the straight from a hand containing more than 5 cards"
-;    (let [cards [[:clubs :5] [:hearts :6] [:clubs :queen] [:spades :7] [:hearts :jack] [:diamonds :8] [:clubs :9]]
-;          result (cards/find-straight cards)]
-;      (is (= [:9 :8 :7 :6 :5] (map last result)))))
+  (testing "Returns the straight from a hand containing more than 5 cards"
+    (let [cards [[:clubs :5] [:hearts :6] [:clubs :queen] [:spades :7] [:hearts :jack] [:diamonds :8] [:clubs :9]]
+          result (cards/find-straight cards)]
+      (is (= [:9 :8 :7 :6 :5] (map last result)))))
 ;  (testing "Correctly identify a straight with a low ace"
 ;    (let [result (cards/find-straight ace-low-straight-hand)]
 ;      (is (= [:5 :4 :3 :2 :ace] (map last result)))))
