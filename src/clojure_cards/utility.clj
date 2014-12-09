@@ -91,8 +91,17 @@
          id 0]
     (if-not (seq cards)
       result
-      (let [last-rank (if (seq result) (last (first (last result))) 100)
+      (let [last-rank (if (seq result)
+                        (last (first (last result)))
+                        100)
             next-card (first cards)
             next-rank (last next-card)
-            next-id (if (= last-rank (+ 1 next-rank)) id (inc id))]
-        (recur (conj result (vector next-card next-id)) (rest cards) next-id)))))
+            next-id (cond
+                      (= last-rank (inc next-rank)) id
+                      (= last-rank next-rank) id
+                      :else (inc id))]
+        (recur
+          (if (= last-rank next-rank)
+            result
+            (conj result (vector next-card next-id)))
+          (rest cards) next-id)))))
