@@ -134,7 +134,7 @@
 (defn find-straight-flush
   "Returns the cards making up a straight flush from the specified cards, if a straight flush exists. Otherwise nil."
   [cards]
-  (find-flush (find-straight (count cards) cards)))
+  (find-straight 5 (find-flush cards)))
 
 (defn straight-flush?
   "Returns true if the specified cards contain a straight flush, otherwise false"
