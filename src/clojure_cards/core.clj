@@ -210,8 +210,8 @@
   [[index1 strength1 cards1] [index2 strength2 cards2]]
   (let [primary-result (compare index1 index2)]
     (if (= 0 primary-result)
-      (let [rank1 (rank->integer true (last (first cards1)))
-            rank2 (rank->integer true (last (first cards2)))]
+      (let [rank1 (into [] (map #(rank->integer true (last %)) cards1))
+            rank2 (into [] (map #(rank->integer true (last %)) cards2))]
         (compare rank1 rank2))
       primary-result)))
 
