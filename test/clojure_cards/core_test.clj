@@ -184,8 +184,7 @@
       (is (nil? result)))
     (let [cards [[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6] [:clubs :7]]
           result (cards/find-straight cards)]
-      (is (= [:7 :6 :5 :4 :3] (map last result)))))
-)
+      (is (= [:7 :6 :5 :4 :3] (map last result))))))
 
 (deftest find-a-straight-flush
   (testing "Correctly returns the straight flush from a hand that includes one"
