@@ -22,9 +22,15 @@
   ([cards] (find-straight 5 cards))
   ([length-of-hand cards]
   (->> cards
-       sort-cards
-       (partition length-of-hand 1)
-       (some #(get-full-sequence %)))))
+       sortable
+       (sort #(compare (last %2) (last %1))) ; sort by descending rank
+       append-sequence-identifier
+       (partition-by last)
+       (map #(map first %)) ; group them by sequence
+       (sort #(compare (ffirst %2) (ffirst %1))) ; sort by highest rank in sequence descending
+       (filter #(<= length-of-hand (count %)))
+       first
+       (map first))))
 
 (defn find-n-of-a-kind
   "Returns the cards that make up the specified n-of-a-kind hand, or nil if the hand can't be made"

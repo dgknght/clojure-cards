@@ -3,6 +3,12 @@
 (def all-suits [:clubs :diamonds :hearts :spades])
 (def all-ranks [:2 :3 :4 :5 :6 :7 :8 :9 :10 :jack :queen :king :ace])
 
+(defn print-and-return
+  "Prints the value and returns it"
+  [caption value]
+  (printf "%s=%s\n" caption value)
+  value)
+
 (defn rank->integer
   "Converts a rank to an integer value for sorting"
   ([rank] (rank->integer true rank))
@@ -63,23 +69,30 @@
         list2))
     list1))
 
+(defn sortable
+  "Returns a list of vectors containing the specified cards and an integer that can be used to sort the cards by rank. [[:club :2] [:spade :ace]] => [[[:club :2] 0] [[:spade :ace] -1]]"
+  ([cards] (sortable true cards))
+  ([aces-high cards]
+   (map #(vector % (rank->integer aces-high (last %))) cards)))
+
 (defn sort-cards
   "Returns the cards sorted in descending order of rank"
   [cards]
   (->> cards
-       (map #(vector % (rank->integer (last %))))
+       sortable
        (sort (fn [[_ r1] [_ r2]] (compare r2 r1)))
        (map first)))
 
-(defn get-full-sequence
-  "Returns the cards if they make up a straight, otherwise nil"
-  [cards]
-  (let [successors (map inc-rank cards)
-        cards-not-matched (missing cards successors)
-        successors-not-matched (missing successors cards)]
-
-    (printf "cards-not-matched=%s\n" (seq cards-not-matched))
-    (printf "successors-not-matched=%s\n" (seq successors-not-matched))
-
-    (if (and (= 1 (count successors-not-matched)) (= 1 (count cards-not-matched)))
-      (sort-cards cards))))
+(defn append-sequence-identifier
+  "Appends an integer after the card/sortable-rank pair identifying the sequence within the list to which it belongs"
+  [sortable-cards]
+  (loop [result []
+         cards sortable-cards
+         id 0]
+    (if-not (seq cards)
+      result
+      (let [last-rank (if (seq result) (last (first (last result))) 100)
+            next-card (first cards)
+            next-rank (last next-card)
+            next-id (if (= last-rank (+ 1 next-rank)) id (inc id))]
+        (recur (conj result (vector next-card next-id)) (rest cards) next-id)))))
