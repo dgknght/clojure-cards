@@ -20,9 +20,10 @@
 (defn find-straight
   "Returns the cards making up a straight, if present in the specified cards. Otherwise returns nil."
   ([cards] (find-straight 5 cards))
-  ([length-of-hand cards]
+  ([length-of-hand cards] (or (find-straight true length-of-hand cards) (find-straight false length-of-hand cards)))
+  ([aces-high length-of-hand cards]
   (->> cards
-       sortable ; add the sortable rank value
+       (sortable aces-high) ; add the sortable rank value
        (sort #(compare (last %2) (last %1))) ; sort by descending rank
        append-sequence-identifier
        (partition-by last) ; group them by the sequence id
