@@ -163,7 +163,6 @@
   (testing "Correctly identify a straight"
     (let [cards [[:clubs :5] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]]
           result (cards/find-straight cards)]
-      (printf "result=%s\n" result)
       (is (= 1 1))));[:9 :8 :7 :6 :5] (map last result)))))
   (testing "Returns nil if no straight is present"
     (let [cards [[:clubs :4] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]]
