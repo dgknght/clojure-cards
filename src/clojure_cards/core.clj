@@ -190,16 +190,6 @@
        (partition card-count)
        (map #(apply hash-set %))))
 
-(defn five-card-draw
-  "Deals 2 hands of 5 cards and declares a winner"
-  [player-count]
-  (println "five card draw")
-  (->> (new-deck)
-       shuffle
-       (deal player-count 5)
-       (map evaluate-hand)
-       (println)))
-
 (defn sortable-hand
   "Returns a sequence containing the specified evaluate hand and an integer that can be used to compare this hand to other evaluated hands"
   [[strength cards]]
@@ -215,6 +205,33 @@
             rank2 (into [] (map #(rank->integer true (last %)) cards2))]
         (compare rank1 rank2))
       primary-result)))
+
+(defn five-card-draw
+  "Deals 2 hands of 5 cards and declares a winner"
+  [player-count]
+  (println "--------------")
+  (println "five card draw")
+  (println "--------------")
+  (println)
+  (let [hands (->> (new-deck)
+                   shuffle
+                   (deal player-count 5))
+        evaluated (->> hands
+                       (map evaluate-hand)
+                       (sort #(compare-hands %2 %1))
+                       (map (fn [[strength cards]]
+                              (vector strength (apply hash-set cards)))))
+        ranked (map
+                 #(let [e (first (filter (fn [e] (= (last e) %)) evaluated))
+                        rank (inc (.indexOf evaluated e))
+                        strength (first e)]
+                    (vector rank strength %))
+                 hands)]
+    (doseq [[rank strength cards] ranked]
+      (printf "place: %s\n"  rank)
+      (printf "strength: %s\n" strength)
+      (printf "cards: %s\n" cards)
+      (println))))
 
 (defn winner
   "Returns the strongest hand from the specified list of hands"
