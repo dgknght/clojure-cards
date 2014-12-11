@@ -161,15 +161,15 @@
 
 (deftest find-a-straight
   (testing "Correctly identify a straight"
-    (let [cards [[:clubs :5] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]]
+    (let [cards #{[:clubs :5] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]}
           result (cards/find-straight cards)]
       (is (= 1 1))));[:9 :8 :7 :6 :5] (map last result)))))
   (testing "Returns nil if no straight is present"
-    (let [cards [[:clubs :4] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]]
+    (let [cards #{[:clubs :4] [:hearts :6] [:spades :7] [:diamonds :8] [:clubs :9]}
           result (cards/find-straight cards)]
       (is (nil? result))))
   (testing "Returns the straight from a hand containing more than 5 cards"
-    (let [cards [[:clubs :5] [:hearts :6] [:clubs :queen] [:spades :7] [:hearts :jack] [:diamonds :8] [:clubs :9]]
+    (let [cards #{[:clubs :5] [:hearts :6] [:clubs :queen] [:spades :7] [:hearts :jack] [:diamonds :8] [:clubs :9]}
           result (cards/find-straight cards)]
       (is (= [:9 :8 :7 :6 :5] (map last result)))))
   (testing "Correctly identify a straight with a low ace"
@@ -179,10 +179,10 @@
     (let [result (cards/find-straight ace-high-straight-hand)]
       (is (= [:ace :king :queen :jack :10] (map last result)))))
   (testing "Is not confused by duplicate ranks"
-    (let [cards [[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6]]
+    (let [cards #{[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6]}
           result (cards/find-straight cards)]
       (is (nil? result)))
-    (let [cards [[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6] [:clubs :7]]
+    (let [cards #{[:clubs :3] [:hearts :4] [:clubs :4] [:diamonds :5] [:spades :6] [:clubs :7]}
           result (cards/find-straight cards)]
       (is (= [:7 :6 :5 :4 :3] (map last result))))))
 
@@ -279,22 +279,22 @@
 
 (deftest compare-same-strength-hands
   (testing "A higher card beats a high card"
-    (let [other-hand [[:spades :5] [:diamonds :8] [:clubs :3] [:spades :ace] [:hearts :6]]
+    (let [other-hand #{[:spades :5] [:diamonds :8] [:clubs :3] [:spades :ace] [:hearts :6]}
           [_ winning-cards] (cards/winner high-card-hand other-hand)
           highest-card (first winning-cards)]
       (is (= [:spades :ace] highest-card))))
   (testing "A higher pair beats a pair"
-    (let [other-hand [[:spades :5] [:diamonds :8] [:clubs :3] [:spades :ace] [:hearts :ace]]
+    (let [other-hand #{[:spades :5] [:diamonds :8] [:clubs :3] [:spades :ace] [:hearts :ace]}
           [_ winning-cards] (cards/winner pair-hand other-hand)
           [[_ highest-rank]] winning-cards]
       (is (= :ace highest-rank))))
   (testing "A higher pair of two beats another two pair"
-    (let [other-hand [[:spades :5] [:diamonds :5] [:clubs :3] [:spades :ace] [:hearts :ace]]
+    (let [other-hand #{[:spades :5] [:diamonds :5] [:clubs :3] [:spades :ace] [:hearts :ace]}
           [_ winning-cards] (cards/winner two-pair-hand other-hand)
           [[_ highest-rank]] winning-cards]
       (is (= :ace highest-rank))))
   (testing "A higher second pair of two beats another two pair with a matching high pair"
-    (let [other-hand [[:spades :5] [:diamonds :5] [:clubs :3] [:spades :queen] [:hearts :queen]]
+    (let [other-hand #{[:spades :5] [:diamonds :5] [:clubs :3] [:spades :queen] [:hearts :queen]}
           [_ winning-cards] (cards/winner other-hand two-pair-hand) ; pair of jacks, pair of queens
           [_ _ [_ highest-rank]] winning-cards]
       (is (= :jack highest-rank))))) ; queens and jacks beats queens and fives
