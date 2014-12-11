@@ -187,7 +187,8 @@
        (take (* hand-count card-count))
        (partition hand-count)
        (apply interleave)
-       (partition card-count)))
+       (partition card-count)
+       (map #(apply hash-set %))))
 
 (defn five-card-draw
   "Deals 2 hands of 5 cards and declares a winner"

@@ -249,13 +249,13 @@
     (let [result (cards/deal 1 5 (new-deck))]
       (is (= 1 (count result)))
       (let [[hand] result]
-        (is (= [[:clubs :2] [:clubs :3] [:clubs :4] [:clubs :5] [:clubs :6]] hand) "The single hand should have the right cards"))))
+        (is (= #{[:clubs :2] [:clubs :3] [:clubs :4] [:clubs :5] [:clubs :6]} hand) "The single hand should have the right cards"))))
   (testing "Gives the right number of cards in the right order to two different hands"
     (let [result (cards/deal 2 5 (new-deck))]
       (is (= 2 (count result)))
       (let [[hand1 hand2] result]
-        (is (= [[:clubs :2] [:clubs :4] [:clubs :6] [:clubs :8] [:clubs :10]] hand1) "The first hand should have the right cards")
-        (is (= [[:clubs :3] [:clubs :5] [:clubs :7] [:clubs :9] [:clubs :jack]] hand2) "The second hand should have the right cards")))))
+        (is (= #{[:clubs :2] [:clubs :4] [:clubs :6] [:clubs :8] [:clubs :10]} hand1) "The first hand should have the right cards")
+        (is (= #{[:clubs :3] [:clubs :5] [:clubs :7] [:clubs :9] [:clubs :jack]} hand2) "The second hand should have the right cards")))))
 
 (deftest find-a-winner
   (testing "A pair beats a high card"
